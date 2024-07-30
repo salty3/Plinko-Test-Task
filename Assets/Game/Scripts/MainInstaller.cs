@@ -1,4 +1,7 @@
-﻿using Zenject;
+﻿using Game.Scripts.Gameplay;
+using Game.Scripts.TimerSystem;
+using JetBrains.Annotations;
+using Zenject;
 
 namespace Game.Scripts
 {
@@ -6,7 +9,17 @@ namespace Game.Scripts
     {
         public override void InstallBindings()
         {
+            ServicesInstaller.Install(Container);
             
+        }
+    }
+    
+    [UsedImplicitly]
+    public class ServicesInstaller : Installer<ServicesInstaller>
+    {
+        public override void InstallBindings()
+        {
+            Container.BindInterfacesTo<TimerService>().AsSingle();
         }
     }
 }

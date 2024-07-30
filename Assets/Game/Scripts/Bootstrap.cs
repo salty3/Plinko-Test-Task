@@ -16,6 +16,7 @@ namespace Game.Scripts
         
         private IEnumerable<IApplicationLifetimeHandler> _applicationLifetimeHandlers;
         private IEnumerable<IService> _services;
+        private IEnumerable<IEverySecondTickable> _everySecondTickables;
         
         private SceneReferences _sceneRefs;
         
@@ -24,6 +25,7 @@ namespace Game.Scripts
             _sceneRefs = container.Resolve<SceneReferences>();
             _applicationLifetimeHandlers = container.Resolve<IEnumerable<IApplicationLifetimeHandler>>();
             _services = container.Resolve<IEnumerable<IService>>();
+            _everySecondTickables = container.Resolve<IEnumerable<IEverySecondTickable>>();
         }
         
         public async UniTask OnSceneOpen(IProgress<float> progress)
@@ -65,6 +67,19 @@ namespace Game.Scripts
             foreach (var handler in _applicationLifetimeHandlers)
             {
                 handler.OnApplicationQuit();
+            }
+        }
+        
+        private async UniTask EverySecondTick()
+        {
+            var token = DestroyCancellationToken;
+            while (!token.IsCancellationRequested)
+            {
+                foreach (var tickable in _everySecondTickables)
+                {
+                    tickable.OnEverySecondTick();
+                }
+                await UniTask.Delay(TimeSpan.FromSeconds(1), cancellationToken: token);
             }
         }
     }
