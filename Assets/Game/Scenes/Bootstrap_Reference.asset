@@ -1,0 +1,18 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 36e7688ceb3741ef8d882c975301aab3, type: 3}
+  m_Name: Bootstrap_Reference
+  m_EditorClassIdentifier: 
+  _sceneName: Bootstrap
+  _sceneIndex: -2
+  _scenePath: Assets/Game/Scenes/Bootstrap.unity
+  _scene: {fileID: 102900000, guid: 6fd677be49cfa1a499a17aacfc6d44ef, type: 3}
