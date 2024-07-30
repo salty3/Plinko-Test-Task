@@ -10,6 +10,7 @@ using Zenject;
 
 namespace Game.Scripts
 {
+    //Any heavy loading here
     public class Bootstrap : CachedMonoBehaviour, ISceneEntryPoint
     {
         [SerializeField] private SceneContext _sceneContext;
@@ -19,9 +20,11 @@ namespace Game.Scripts
         private IEnumerable<IEverySecondTickable> _everySecondTickables;
         
         private SceneReferences _sceneRefs;
+        private SceneController _sceneController;
         
         private void Resolve(DiContainer container)
         {
+            _sceneController = container.Resolve<SceneController>();
             _sceneRefs = container.Resolve<SceneReferences>();
             _applicationLifetimeHandlers = container.Resolve<IEnumerable<IApplicationLifetimeHandler>>();
             _services = container.Resolve<IEnumerable<IService>>();
@@ -33,41 +36,44 @@ namespace Game.Scripts
             var token = DestroyCancellationToken;
         
             Application.targetFrameRate = 60;
+            
+            _sceneContext.ContractNames = new[] { nameof(Bootstrap) };
+            _sceneContext.ParentContractNames = new[] { nameof(Startup) };
             _sceneContext.Run();
             Resolve(_sceneContext.Container);
             
             float progressPerInit = 0.9f / _services.Count();
             float currentProgress = 0f;
             
-            //SoundManager.Init();
+            
             foreach (var service in _services)
             {
                 await service.Initialize(token);
                 progress.Report(currentProgress += progressPerInit);
             }
             
-            await _sceneRefs.GameScene
+            var builder = _sceneRefs.GameScene
                 .LoadScene()
-                .WithMode(LoadSceneMode.Additive)
-                .Execute();
-        
+                .WithMode(LoadSceneMode.Additive);
+            
+            await _sceneController.LoadAsync(builder);
             progress.Report(1f);
         }
         
         private void OnApplicationFocus(bool hasFocus)
         {
-            foreach (var handler in _applicationLifetimeHandlers)
+            /*foreach (var handler in _applicationLifetimeHandlers)
             {
                 handler.OnApplicationFocus(hasFocus);
-            }
+            }*/
         }
         
         private void OnApplicationQuit()
         {
-            foreach (var handler in _applicationLifetimeHandlers)
+            /*foreach (var handler in _applicationLifetimeHandlers)
             {
                 handler.OnApplicationQuit();
-            }
+            }*/
         }
         
         private async UniTask EverySecondTick()

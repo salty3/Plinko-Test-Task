@@ -1,10 +1,13 @@
-﻿using Cysharp.Threading.Tasks;
+﻿using System;
+using Cysharp.Threading.Tasks;
 using UnityEngine.Events;
 
 namespace Game.Scripts.Gameplay.Card
 {
     public class CardPresenter
     {
+        public string ID { get; }
+        
         public UnityEvent OnSelect { get; } = new();
         public UnityEvent OnDeselect { get; } = new();
         
@@ -12,23 +15,29 @@ namespace Game.Scripts.Gameplay.Card
 
         private bool _isSelected;
         
-        public CardPresenter(CardView view)
+        public CardPresenter(string id, CardView view)
         {
+            ID = id;
             _view = view;
             _view.OnClick.AddListener(OnClick);
         }
         
-        private void Select()
+        public void SetOrderIndex(int index)
         {
-            _isSelected = true;
-            _view.Select().Forget();
-            OnSelect.Invoke();
+            _view.RectTransform.SetSiblingIndex(index);
         }
         
-        private void Deselect()
+        private async UniTask Select()
+        {
+            _isSelected = true;
+            await _view.Select();
+            OnSelect.Invoke();
+        }
+
+        public async UniTask Deselect()
         {
             _isSelected = false;
-            _view.Deselect().Forget();
+            await _view.Deselect();
             OnDeselect.Invoke();
         }
         
@@ -36,11 +45,11 @@ namespace Game.Scripts.Gameplay.Card
         {
             if (_isSelected)
             {
-                Deselect();
+                Deselect().Forget();
             }
             else
             {
-                Select();
+                Select().Forget();
             }
         }
     }

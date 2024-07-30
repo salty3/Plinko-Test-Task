@@ -35,10 +35,5 @@ namespace Tools.SceneManagement.Runtime
             AdditionalRegistrations = additionalRegistrations;
             return this;
         }
-
-        public UniTask Execute()
-        {
-            return SceneController.Instance.LoadAsync(this);
-        }
     }
 }

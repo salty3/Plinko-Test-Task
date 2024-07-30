@@ -1,16 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
-using Tools.Runtime;
 using UnityEngine.SceneManagement;
 using Zenject;
 
 namespace Tools.SceneManagement.Runtime
 {
-    public class SceneController : SingletonBehaviour<SceneController>
+    public class SceneController
     {
-        private ZenjectSceneLoader _sceneLoader;
+        private readonly ZenjectSceneLoader _sceneLoader;
         private readonly Dictionary<string, ILoadingScreen> _openedLoadingScreens = new();
+        
+        [Inject]
+        public SceneController(ZenjectSceneLoader sceneLoader)
+        {
+            _sceneLoader = sceneLoader;
+        }
         
         private async UniTask<ILoadingScreen> OpenLoadingScreen(SceneLoadingBuilder sceneLoadingBuilder)
         {
@@ -71,7 +76,7 @@ namespace Tools.SceneManagement.Runtime
                 : Progress.Create<float>(_ => { });
         }
 
-        internal async UniTask LoadAsync(SceneLoadingBuilder sceneLoadingBuilder)
+        public async UniTask LoadAsync(SceneLoadingBuilder sceneLoadingBuilder)
         {
             var loadingScreen = await OpenLoadingScreen(sceneLoadingBuilder);
             var progress = GetProgress(loadingScreen);

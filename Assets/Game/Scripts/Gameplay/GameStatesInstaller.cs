@@ -9,11 +9,11 @@ namespace Game.Scripts.Gameplay
     {
         public override void InstallBindings()
         {
-            Container.Bind<GameplayLoopStateManager>();
+            Container.Bind<GameplayLoopStateManager>().AsSingle();
             //States
-            Container.Bind<PlayerInteractionState>();
-            Container.Bind<ShuffleCardsState>();
-            Container.Bind<PreparationPhaseState>();
+            Container.Bind<PlayerInteractionState>().AsSingle();
+            Container.Bind<ShuffleCardsState>().AsSingle();
+            Container.Bind<PreparationPhaseState>().AsSingle();
         }
     }
 }

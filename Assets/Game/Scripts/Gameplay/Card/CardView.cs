@@ -21,6 +21,16 @@ namespace Game.Scripts.Gameplay.Card
         [SerializeField] private Image _backImage;
         
         public UnityEvent OnClick { get; } = new();
+        
+        public void SetFrontIcon(Sprite icon)
+        {
+            _frontImage.sprite = icon;
+        }
+        
+        public void SetBackIcon(Sprite back)
+        {
+            _backImage.sprite = back;
+        }
 
         public async UniTask Select()
         {
