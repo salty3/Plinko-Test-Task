@@ -11,6 +11,7 @@ namespace Game.Scripts
         {
             ServicesInstaller.Install(Container);
             
+            Container.Bind<GameplayLoopStateManager>().FromSubContainerResolve().ByInstaller<GameStatesInstaller>();
         }
     }
     
