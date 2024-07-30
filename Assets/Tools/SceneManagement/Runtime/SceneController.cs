@@ -88,5 +88,10 @@ namespace Tools.SceneManagement.Runtime
                 await loadingScreen.Close();
             }
         }
+
+        public void Close(SceneReference sceneReference)
+        {
+            SceneManager.UnloadSceneAsync(sceneReference.SceneName);
+        }
     }
 }

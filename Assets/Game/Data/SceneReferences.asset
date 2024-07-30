@@ -15,4 +15,5 @@ MonoBehaviour:
   <Startup>k__BackingField: {fileID: 11400000, guid: a75788be33eeefb41a039c164661ef0f, type: 2}
   <Bootstrap>k__BackingField: {fileID: 11400000, guid: 6d572de27e14d6841afdf33097b18403, type: 2}
   <GameScene>k__BackingField: {fileID: 11400000, guid: 09a96803f4b20ac45811cd254704bcb3, type: 2}
+  <MainMenu>k__BackingField: {fileID: 11400000, guid: 2cd7bfa4afe5807428e30ba8bd76df15, type: 2}
   <Loading>k__BackingField: {fileID: 11400000, guid: 2ee807d86c92bb94d957d2d53a5a4c4f, type: 2}

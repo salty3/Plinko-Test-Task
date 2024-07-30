@@ -1,24 +1,25 @@
 ﻿using System;
 using Cysharp.Threading.Tasks;
+using Game.Scripts.Gameplay;
+using Game.Scripts.Gameplay.States;
 using Tools.Runtime;
 using Tools.SceneManagement.Runtime;
 using UnityEngine;
 using Zenject;
 
-namespace Game.Scripts.MenuScene
+namespace Game.Scripts
 {
-    public class MenuSceneEntryPoint : CachedMonoBehaviour, ISceneEntryPoint
+    public class GameSceneEntryPoint : CachedMonoBehaviour, ISceneEntryPoint
     {
         [SerializeField] private SceneContext _sceneContext;
         
+        //Can be used for more control over scene initialization process, heavy loadings etc.
+        //Loading screen hides only after this method is completed.
         public UniTask OnSceneOpen(IProgress<float> progress)
         {
             _sceneContext.ParentContractNames = new[] { nameof(ApplicationInitializer) };
             _sceneContext.Run();
-
-            var stateManager = _sceneContext.Container.Resolve<MenuStateManager>();
-            stateManager.SwitchToState<MainMenuState>();
-            
+            _sceneContext.Container.Resolve<GameplayLoopStateManager>().SwitchToState<PreparationPhaseState>();
             progress.Report(1f);
             return UniTask.CompletedTask;
         }
