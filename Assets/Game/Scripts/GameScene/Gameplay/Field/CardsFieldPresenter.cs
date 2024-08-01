@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using Game.Scripts.Gameplay.Card;
 using Tools.Runtime;
@@ -14,22 +15,24 @@ namespace Game.Scripts.Gameplay
 
         private CardPresenter _selectedPresenter;
 
-        private HashSet<string> _completedPairs;
-
-        private List<CardPresenter> _cardsOrder;
-
-        private Dictionary<string, (CardPresenter, CardPresenter)> _cards;
+        private readonly List<CardPresenter> _cardsOrder;
+        private readonly Dictionary<string, CardPresenterPair> _cards;
         
-        public UnityEvent Matched { get; } = new();
+        public UnityEvent<string> Matched { get; } = new();
         public UnityEvent Mismatched { get; } = new();
+        
+        private class CardPresenterPair
+        {
+            public CardPresenter CardPresenter1 { get; set; }
+            public CardPresenter CardPresenter2 { get; set; }
+        }
         
         [Inject]
         public CardsFieldPresenter(CardsFieldView view)
         {
             _view = view;
-            _completedPairs = new HashSet<string>();
             _cardsOrder = new List<CardPresenter>();
-            _cards = new Dictionary<string, (CardPresenter, CardPresenter)>();
+            _cards = new Dictionary<string, CardPresenterPair>();
         }
         
         void IInitializable.Initialize()
@@ -69,9 +72,8 @@ namespace Game.Scripts.Gameplay
             
             if (_selectedPresenter.ID == presenter.ID)
             {
-                _completedPairs.Add(presenter.ID);
                 _selectedPresenter = null;
-                Matched.Invoke();
+                Matched.Invoke(presenter.ID);
                 return;
             }
 
@@ -94,7 +96,11 @@ namespace Game.Scripts.Gameplay
                 _cardsOrder.Add(cardPresenter1);
                 _cardsOrder.Add(cardPresenter2);
                 
-                _cards[cardData.ID] = (cardPresenter1, cardPresenter2);
+                _cards[cardData.ID] = new CardPresenterPair()
+                {
+                    CardPresenter1 = cardPresenter1,
+                    CardPresenter2 = cardPresenter2
+                };
             }
         }
         
@@ -102,19 +108,31 @@ namespace Game.Scripts.Gameplay
         {
             var cardView = _view.CreateCardView(cardData, backIcon);
             var cardPresenter = new CardPresenter(cardData.ID, cardView);
-            cardPresenter.Selected.AddListener(() => OnCardSelected(cardPresenter));
+            cardPresenter.Clicked.AddListener(() => OnCardSelected(cardPresenter));
             return cardPresenter;
         }
         
-        public void Shuffle()
+        public async UniTask Shuffle()
         {
             _cardsOrder.Shuffle();
             for (var i = 0; i < _cardsOrder.Count; i++)
             {
                 _cardsOrder[i].SetOrderIndex(i);
             }
-            //flip face
-            //flip back
+
+            await UniTask.Delay(TimeSpan.FromSeconds(_view.GridMoveDuration));
+        }
+
+        public async UniTask ShowCardsFor(TimeSpan time)
+        {
+            await UniTask.WhenAll(_cardsOrder.Select(cardPresenter => cardPresenter.Select()));
+            await UniTask.Delay(time);
+            await UniTask.WhenAll(_cardsOrder.Select(cardPresenter => cardPresenter.Deselect()));
+        }
+        
+        public void CompletePair(string id)
+        {
+            _view.ShowCompletion(id).Forget();
         }
     }
 }

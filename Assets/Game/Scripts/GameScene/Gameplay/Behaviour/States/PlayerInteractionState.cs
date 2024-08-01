@@ -1,26 +1,39 @@
-﻿using UnityEngine;
+﻿using System.Linq;
+using Game.Scripts.Gameplay;
+using Game.Scripts.Gameplay.InfoPanel;
 using Zenject;
 
-namespace Game.Scripts.Gameplay.States
+namespace Game.Scripts.GameScene.Gameplay.Behaviour.States
 {
     public class PlayerInteractionState : GameState
     {
-        private CardsFieldPresenter _cardsFieldPresenter;
-        private GameplayLoopStateManager _gameplayLoopStateManager;
+        private readonly CardsFieldPresenter _cardsFieldPresenter;
+        private readonly GameplayLoopStateManager _gameplayLoopStateManager;
         
-        int _matchesCount = 0;
+
+        private int _matchesCount;
+        private readonly int _maxMatchesCount;
+
+        private int _mismatchesCount;
+        private readonly int _maxMismatchesCount;
+
+        private readonly InfoPanelPresenter _infoPanelPresenter;
         
         [Inject]
-        public PlayerInteractionState(CardsFieldPresenter cardsFieldPresenter, GameplayLoopStateManager gameplayLoopStateManager)
+        public PlayerInteractionState(CardsFieldPresenter cardsFieldPresenter, GameplayLoopStateManager gameplayLoopStateManager, LevelData levelData, InfoPanelPresenter infoPanelPresenter)
         {
             _cardsFieldPresenter = cardsFieldPresenter;
             _gameplayLoopStateManager = gameplayLoopStateManager;
+            _infoPanelPresenter = infoPanelPresenter;
+            _maxMatchesCount = levelData.Cards.Count();
+            _maxMismatchesCount = levelData.MaxMismatchCount;
         }
         
         public override void Initialize()
         {
             _cardsFieldPresenter.Matched.AddListener(OnMatch);
-            _cardsFieldPresenter.Mismatched.AddListener(OnMissmatch);
+            _cardsFieldPresenter.Mismatched.AddListener(OnMismatch);
+            _infoPanelPresenter.ShuffleButtonClicked.AddListener(OnShuffleButtonClicked);
             
             _cardsFieldPresenter.UnblockInteraction();
         }
@@ -29,19 +42,35 @@ namespace Game.Scripts.Gameplay.States
         {
             _cardsFieldPresenter.BlockInteraction();
             
+            _infoPanelPresenter.ShuffleButtonClicked.RemoveListener(OnShuffleButtonClicked);
             _cardsFieldPresenter.Matched.RemoveListener(OnMatch);
-            _cardsFieldPresenter.Mismatched.RemoveListener(OnMissmatch);
+            _cardsFieldPresenter.Mismatched.RemoveListener(OnMismatch);
         }
         
-        private void OnMatch()
+        private void OnShuffleButtonClicked()
+        {
+            _gameplayLoopStateManager.SwitchToState<ShuffleCardsState>();
+        }
+        
+        private void OnMatch(string pairId)
         {
             _matchesCount++;
-            Debug.Log(_matchesCount);
+            _cardsFieldPresenter.CompletePair(pairId);
+            _infoPanelPresenter.SetMatchCount(_matchesCount);
+            if (_matchesCount == _maxMatchesCount)
+            {
+                _gameplayLoopStateManager.SwitchToState<WinState>();
+            }
         }
         
-        private void OnMissmatch()
+        private void OnMismatch()
         {
-            Debug.Log("Missmatch");
+            _mismatchesCount++;
+            _infoPanelPresenter.SetMismatchCount(_mismatchesCount);
+            if (_mismatchesCount == _maxMismatchesCount)
+            {
+                _gameplayLoopStateManager.SwitchToState<LoseState>();
+            }
         }
     }
 }

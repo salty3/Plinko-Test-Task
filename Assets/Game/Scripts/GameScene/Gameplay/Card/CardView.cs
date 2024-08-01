@@ -20,7 +20,18 @@ namespace Game.Scripts.Gameplay.Card
         [SerializeField] private Image _frontImage;
         [SerializeField] private Image _backImage;
         
+        public RectTransform CardsContainer => _cardsContainer;
+        
         public UnityEvent OnClick { get; } = new();
+
+        private Tween _tween;
+        
+        private bool _isCompleted;
+
+        public void SetAsCompleted()
+        {
+            _isCompleted = true;
+        }
         
         public void SetFrontIcon(Sprite icon)
         {
@@ -34,20 +45,24 @@ namespace Game.Scripts.Gameplay.Card
 
         public async UniTask Select()
         {
-            await DOTween.Sequence()
-                .Append(_cardsContainer.DOScale(1.2f, 0.2f))
-                .Append(_cardsContainer.DORotate(Vector3.up * 90, 0.4f))
+            _tween?.Kill();
+            _tween = DOTween.Sequence()
+                //.Append(_cardsContainer.DOScale(1.2f, 0.1f))
+                .Append(_cardsContainer.DORotate(Vector3.up * 90, 0.2f))
                 .AppendCallback(() => ChangeSide(CardSide.Front))
-                .Append(_cardsContainer.DORotate(Vector3.up * 0, 0.4f));
+                .Append(_cardsContainer.DORotate(Vector3.up * 0, 0.2f));
+            await _tween;
         }
         
         public async UniTask Deselect()
         {
-            await DOTween.Sequence()
-                .Append(_cardsContainer.DORotate(Vector3.up * 90, 0.4f))
+            _tween?.Kill();
+            _tween = DOTween.Sequence()
+                .Append(_cardsContainer.DORotate(Vector3.up * 90, 0.2f))
                 .AppendCallback(() => ChangeSide(CardSide.Back))
-                .Append(_cardsContainer.DORotate(Vector3.up * 0, 0.4f))
-                .Append(_cardsContainer.DOScale(1f, 0.2f));
+                .Append(_cardsContainer.DORotate(Vector3.up * 0, 0.2f));
+               // .Append(_cardsContainer.DOScale(1f, 0.1f));
+            await _tween;
         }
         
         private void ChangeSide(CardSide side)
@@ -59,6 +74,10 @@ namespace Game.Scripts.Gameplay.Card
 
         public void OnPointerClick(PointerEventData eventData)
         {
+            if (_isCompleted)
+            {
+                return;
+            }
             OnClick.Invoke();
         }
     }

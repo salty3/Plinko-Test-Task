@@ -14,9 +14,11 @@ namespace Game.Scripts.Gameplay
         [field: SerializeField] public Sprite LevelPreviewIcon { get; set; }
         [field: SerializeField] public Sprite CardBack { get; set; }
         [field: SerializeField] public Sprite LevelBackground { get; set; }
+        [field: SerializeField] public int MaxMismatchCount { get; set; } = 10;
         
         //Here should be some validation for max amount of pairs or level layering logic
-        [FormerlySerializedAs("_cardPairs")] [SerializeField] private CardData[] _cards = new CardData[MAX_PAIRS];
+        [FormerlySerializedAs("_cardPairs")] 
+        [SerializeField] private CardData[] _cards = new CardData[MAX_PAIRS];
         
         public IEnumerable<CardData> Cards => _cards;
     }

@@ -1,7 +1,8 @@
 ﻿using System;
 using Cysharp.Threading.Tasks;
 using Game.Scripts.Gameplay;
-using Game.Scripts.Gameplay.States;
+using Game.Scripts.GameScene.Gameplay.Behaviour;
+using Game.Scripts.GameScene.Gameplay.Behaviour.States;
 using Tools.Runtime;
 using Tools.SceneManagement.Runtime;
 using UnityEngine;

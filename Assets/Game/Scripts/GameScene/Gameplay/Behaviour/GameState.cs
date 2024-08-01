@@ -1,6 +1,6 @@
 ﻿using Tools.Runtime.StateBehaviour;
 
-namespace Game.Scripts.Gameplay
+namespace Game.Scripts.GameScene.Gameplay.Behaviour
 {
     public abstract class GameState : IState
     {

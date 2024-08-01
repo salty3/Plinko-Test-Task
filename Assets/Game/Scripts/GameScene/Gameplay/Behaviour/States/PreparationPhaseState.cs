@@ -1,6 +1,7 @@
-﻿using Zenject;
+﻿using Game.Scripts.Gameplay;
+using Zenject;
 
-namespace Game.Scripts.Gameplay.States
+namespace Game.Scripts.GameScene.Gameplay.Behaviour.States
 {
     public class PreparationPhaseState : GameState
     {
@@ -19,12 +20,14 @@ namespace Game.Scripts.Gameplay.States
 
         public override void Initialize()
         {
+            _cardsFieldPresenter.BlockInteraction();
             _cardsFieldPresenter.SetLevel(_levelData);
             _gameplayLoopStateManager.SwitchToState<ShuffleCardsState>();
         }
 
         public override void Dispose()
         {
+            _cardsFieldPresenter.UnblockInteraction();
         }
     }
 }

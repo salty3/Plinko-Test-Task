@@ -9,8 +9,7 @@ namespace Game.Scripts.Gameplay.Card
         public string ID { get; }
         
         //Unity Events because they can be easily awaited
-        public UnityEvent Selected { get; } = new();
-        public UnityEvent Deselected { get; } = new();
+        public UnityEvent Clicked { get; } = new();
         
         private readonly CardView _view;
 
@@ -21,7 +20,7 @@ namespace Game.Scripts.Gameplay.Card
         {
             ID = id;
             _view = view;
-            _view.OnClick.AddListener(OnClick);
+            _view.OnClick.AddListener(() => OnClick().Forget());
         }
         
         public void SetOrderIndex(int index)
@@ -29,28 +28,16 @@ namespace Game.Scripts.Gameplay.Card
             _view.RectTransform.SetSiblingIndex(index);
         }
         
-        private async UniTask Select()
+        public async UniTask Select()
         {
-            if (_isBlocked)
-            {
-                return;
-            }
-            
             _isSelected = true;
             await _view.Select();
-            Selected.Invoke();
         }
 
         public async UniTask Deselect()
         {
-            if (_isBlocked)
-            {
-                return;
-            }
-            
             _isSelected = false;
             await _view.Deselect();
-            Deselected.Invoke();
         }
         
         public void BlockInteraction()
@@ -63,16 +50,23 @@ namespace Game.Scripts.Gameplay.Card
             _isBlocked = false;
         }
         
-        private void OnClick()
+        private async UniTask OnClick()
         {
+            if (_isBlocked)
+            {
+                return;
+            }
+            
             if (_isSelected)
             {
-                Deselect().Forget();
+                await Deselect();
             }
             else
             {
-                Select().Forget();
+                await Select();
             }
+            
+            Clicked.Invoke();
         }
     }
 }

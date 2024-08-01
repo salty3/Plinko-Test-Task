@@ -1,19 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
-using Game.Scripts.Gameplay.States;
+﻿using Game.Scripts.GameScene.Gameplay.Behaviour.States;
 using Tools.Runtime.StateBehaviour;
 using Zenject;
 
-namespace Game.Scripts.Gameplay
+namespace Game.Scripts.GameScene.Gameplay.Behaviour
 {
     public class GameplayLoopStateManager : StateManager<GameState>
     {
+
         [Inject]
         public GameplayLoopStateManager(DiContainer container) : base(new []
         {
             typeof(PlayerInteractionState),
             typeof(ShuffleCardsState),
-            typeof(PreparationPhaseState)
+            typeof(PreparationPhaseState),
+            typeof(WinState),
+            typeof(LoseState)
         }, container)
         {
         }
