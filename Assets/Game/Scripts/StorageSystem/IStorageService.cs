@@ -1,4 +1,5 @@
 ﻿using Cysharp.Threading.Tasks;
+using Game.Scripts.ApplicationCore;
 
 namespace Game.Scripts.StorageSystem
 {

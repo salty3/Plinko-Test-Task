@@ -1,4 +1,4 @@
-﻿namespace Game.Scripts
+﻿namespace Game.Scripts.ApplicationCore
 {
     public interface IApplicationLifetimeHandler
     {

@@ -1,11 +1,11 @@
-﻿using Game.Scripts.FieldSystem;
+﻿using Game.Scripts.LevelsSystem;
 using Game.Scripts.PlayerSystem;
 using Game.Scripts.StorageSystem;
 using Game.Scripts.TimerSystem;
 using UnityEngine;
 using Zenject;
 
-namespace Game.Scripts
+namespace Game.Scripts.ApplicationCore.ApplicationInitialization
 {
     public class MainInstaller : MonoInstaller
     {

@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using Zenject;
 
-namespace Game.Scripts
+namespace Game.Scripts.ApplicationCore.ApplicationEntry
 {
     //Game entry point
     public class Startup : MonoBehaviour

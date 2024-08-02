@@ -1,5 +1,5 @@
 ﻿using System;
-using Game.Scripts.PlayerSystem.Data;
+using Game.Scripts.ApplicationCore;
 
 namespace Game.Scripts.PlayerSystem
 {

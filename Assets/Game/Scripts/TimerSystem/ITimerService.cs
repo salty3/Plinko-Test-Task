@@ -1,4 +1,5 @@
 ﻿using System;
+using Game.Scripts.ApplicationCore;
 using Zenject;
 
 namespace Game.Scripts.TimerSystem

@@ -1,7 +1,7 @@
 ﻿using System.Threading;
 using Cysharp.Threading.Tasks;
 
-namespace Game.Scripts
+namespace Game.Scripts.ApplicationCore
 {
     public interface IService
     {

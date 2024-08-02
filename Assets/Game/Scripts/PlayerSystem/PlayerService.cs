@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Threading;
 using Cysharp.Threading.Tasks;
-using Game.Scripts.PlayerSystem.Data;
 using Game.Scripts.StorageSystem;
 using UnityEngine;
 using Zenject;

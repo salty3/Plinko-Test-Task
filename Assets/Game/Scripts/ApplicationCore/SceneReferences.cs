@@ -1,7 +1,7 @@
 ﻿using Tools.SceneManagement.Runtime;
 using UnityEngine;
 
-namespace Game.Scripts
+namespace Game.Scripts.ApplicationCore
 {
     [CreateAssetMenu(fileName = "SceneReferences", menuName = "Game/Scene References")]
     public class SceneReferences : ScriptableObject

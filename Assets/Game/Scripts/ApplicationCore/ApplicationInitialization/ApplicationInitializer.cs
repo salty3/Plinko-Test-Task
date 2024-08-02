@@ -2,15 +2,15 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
-using System.Threading.Tasks;
 using Cysharp.Threading.Tasks;
+using Game.Scripts.ApplicationCore.ApplicationEntry;
 using Tools.Runtime;
 using Tools.SceneManagement.Runtime;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using Zenject;
 
-namespace Game.Scripts
+namespace Game.Scripts.ApplicationCore.ApplicationInitialization
 {
     //Any heavy loading here
     public class ApplicationInitializer : CachedMonoBehaviour, ISceneEntryPoint

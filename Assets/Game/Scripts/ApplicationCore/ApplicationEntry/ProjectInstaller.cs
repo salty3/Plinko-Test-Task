@@ -2,7 +2,7 @@
 using UnityEngine;
 using Zenject;
 
-namespace Game.Scripts
+namespace Game.Scripts.ApplicationCore.ApplicationEntry
 {
     public class ProjectInstaller : MonoInstaller
     {
