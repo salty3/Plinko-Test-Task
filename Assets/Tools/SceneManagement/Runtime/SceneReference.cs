@@ -1,6 +1,5 @@
 ﻿using System.Linq;
 using UnityEditor;
-using UnityEditor.SceneManagement;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -75,13 +74,13 @@ namespace Tools.SceneManagement.Runtime
         //[Button(ButtonStyle.Box), HorizontalGroup(GROUP_NAME)]
         internal void OpenSingle()
         {
-            EditorSceneManager.OpenScene(ScenePath, OpenSceneMode.Single);
+            UnityEditor.SceneManagement.EditorSceneManager.OpenScene(ScenePath, UnityEditor.SceneManagement.OpenSceneMode.Single);
         }
         
         //[Button(ButtonStyle.Box), HorizontalGroup(GROUP_NAME)]
         internal void OpenAdditive()
         {
-            EditorSceneManager.OpenScene(ScenePath, OpenSceneMode.Additive);
+            UnityEditor.SceneManagement.EditorSceneManager.OpenScene(ScenePath, UnityEditor.SceneManagement.OpenSceneMode.Additive);
         }
 
         //[Button, HideIf(nameof(IsInBuildSettings))]
