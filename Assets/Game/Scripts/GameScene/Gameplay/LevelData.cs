@@ -1,20 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Game.Scripts.Gameplay.Card;
 using UnityEngine;
 using UnityEngine.Serialization;
 
-namespace Game.Scripts.Gameplay
+namespace Game.Scripts.GameScene.Gameplay
 {
     [CreateAssetMenu(fileName = "LevelData", menuName = "Game/LevelData")]
     public class LevelData : ScriptableObject
     {
         private const int MAX_PAIRS = 12;
         
-        [field: SerializeField] public Sprite LevelPreviewIcon { get; set; }
-        [field: SerializeField] public Sprite CardBack { get; set; }
-        [field: SerializeField] public Sprite LevelBackground { get; set; }
-        [field: SerializeField] public int MaxMismatchCount { get; set; } = 10;
+        [field: SerializeField] public string ID { get; private set; }
+        [field: SerializeField] public Sprite LevelPreviewIcon { get; private set; }
+        [field: SerializeField] public Sprite CardBack { get; private set; }
+        [field: SerializeField] public Sprite LevelBackground { get; private set; }
+        [field: SerializeField] public int MaxMismatchCount { get; private set; } = 10;
         
         //Here should be some validation for max amount of pairs or level layering logic
         [FormerlySerializedAs("_cardPairs")] 

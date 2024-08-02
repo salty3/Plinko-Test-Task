@@ -13,6 +13,7 @@ namespace Game.Scripts.GameScene.Gameplay.Behaviour
             typeof(PlayerInteractionState),
             typeof(ShuffleCardsState),
             typeof(PreparationPhaseState),
+            typeof(ShowCardsState),
             typeof(WinState),
             typeof(LoseState)
         }, container)

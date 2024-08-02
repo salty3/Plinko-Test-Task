@@ -15,5 +15,10 @@ namespace Game.Scripts.MenuScene
         {
             _preview.sprite = icon;
         }
+        
+        public void SetAsCompleted()
+        {
+            _button.interactable = false;
+        }
     }
 }

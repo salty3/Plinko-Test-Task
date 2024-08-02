@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using Cysharp.Threading.Tasks;
 using Tools.Runtime;
 using Tools.SceneManagement.Runtime;
@@ -17,7 +19,6 @@ namespace Game.Scripts
         
         private IEnumerable<IApplicationLifetimeHandler> _applicationLifetimeHandlers;
         private IEnumerable<IService> _services;
-        private IEnumerable<IEverySecondTickable> _everySecondTickables;
         
         private SceneReferences _sceneRefs;
         private SceneController _sceneController;
@@ -28,7 +29,6 @@ namespace Game.Scripts
             _sceneRefs = container.Resolve<SceneReferences>();
             _applicationLifetimeHandlers = container.Resolve<IEnumerable<IApplicationLifetimeHandler>>();
             _services = container.Resolve<IEnumerable<IService>>();
-            _everySecondTickables = container.Resolve<IEnumerable<IEverySecondTickable>>();
         }
         
         public async UniTask OnSceneOpen(IProgress<float> progress)
@@ -41,53 +41,46 @@ namespace Game.Scripts
             _sceneContext.ParentContractNames = new[] { nameof(Startup) };
             _sceneContext.Run();
             Resolve(_sceneContext.Container);
-            
+
+            await InitializeServices(progress, token);
+            await LoadFirstScene();
+            progress.Report(1f);
+        }
+
+        private async UniTask LoadFirstScene()
+        {
+            var builder = _sceneRefs.MainMenu
+                .LoadScene()
+                .WithMode(LoadSceneMode.Additive);
+
+            await _sceneController.LoadAsync(builder);
+        }
+
+        private async UniTask InitializeServices(IProgress<float> progress, CancellationToken token)
+        {
             float progressPerInit = 0.9f / _services.Count();
             float currentProgress = 0f;
-            
             
             foreach (var service in _services)
             {
                 await service.Initialize(token);
                 progress.Report(currentProgress += progressPerInit);
             }
-
-            EverySecondTick().Forget();
-            
-            var builder = _sceneRefs.MainMenu
-                .LoadScene()
-                .WithMode(LoadSceneMode.Additive);
-            
-            await _sceneController.LoadAsync(builder);
-            progress.Report(1f);
         }
         
         private void OnApplicationFocus(bool hasFocus)
         {
-            /*foreach (var handler in _applicationLifetimeHandlers)
+            foreach (var handler in _applicationLifetimeHandlers)
             {
                 handler.OnApplicationFocus(hasFocus);
-            }*/
+            }
         }
         
         private void OnApplicationQuit()
         {
-            /*foreach (var handler in _applicationLifetimeHandlers)
+            foreach (var handler in _applicationLifetimeHandlers)
             {
                 handler.OnApplicationQuit();
-            }*/
-        }
-        
-        private async UniTask EverySecondTick()
-        {
-            var token = DestroyCancellationToken;
-            while (!token.IsCancellationRequested)
-            {
-                foreach (var tickable in _everySecondTickables)
-                {
-                    tickable.OnEverySecondTick();
-                }
-                await UniTask.Delay(TimeSpan.FromSeconds(1), cancellationToken: token);
             }
         }
     }

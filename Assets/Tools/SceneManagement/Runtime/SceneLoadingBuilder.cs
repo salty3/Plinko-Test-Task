@@ -9,6 +9,7 @@ namespace Tools.SceneManagement.Runtime
     {
         internal readonly SceneReference SceneReference;
         internal SceneReference LoadingScreenReference;
+        internal SceneReference SceneToClose;
         internal LoadSceneMode LoadSceneMode = LoadSceneMode.Additive;
         internal Action<DiContainer> AdditionalRegistrations;
         
@@ -27,6 +28,12 @@ namespace Tools.SceneManagement.Runtime
         public SceneLoadingBuilder WithLoadingScreen(SceneReference loadingScreenReference)
         {
             LoadingScreenReference = loadingScreenReference;
+            return this;
+        }
+        
+        public SceneLoadingBuilder WithClosing(SceneReference sceneReference)
+        {
+            SceneToClose = sceneReference;
             return this;
         }
         

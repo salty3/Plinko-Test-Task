@@ -7,11 +7,9 @@ namespace Game.Scripts.GameScene.Gameplay.Behaviour.States
 {
     public class ShuffleCardsState : GameState
     {
-        private CardsFieldPresenter _cardsFieldPresenter;
-        private GameplayLoopStateManager _gameplayLoopStateManager;
-
-        private readonly TimeSpan _showCardsTime = TimeSpan.FromSeconds(3f);
-
+        private readonly CardsFieldPresenter _cardsFieldPresenter;
+        private readonly GameplayLoopStateManager _gameplayLoopStateManager;
+        
         [Inject]
         public ShuffleCardsState(CardsFieldPresenter cardsFieldPresenter, GameplayLoopStateManager gameplayLoopStateManager)
         {
@@ -22,15 +20,13 @@ namespace Game.Scripts.GameScene.Gameplay.Behaviour.States
         public override void Initialize()
         {
             _cardsFieldPresenter.BlockInteraction();
-            ShuffleCards()
-                .ContinueWith(() => _gameplayLoopStateManager.SwitchToState<PlayerInteractionState>())
-                .Forget();
+            ShuffleCards().Forget();
         }
 
         private async UniTask ShuffleCards()
         {
             await _cardsFieldPresenter.Shuffle();
-            await _cardsFieldPresenter.ShowCardsFor(_showCardsTime);
+            _gameplayLoopStateManager.SwitchToState<ShowCardsState>();
         }
 
         public override void Dispose()

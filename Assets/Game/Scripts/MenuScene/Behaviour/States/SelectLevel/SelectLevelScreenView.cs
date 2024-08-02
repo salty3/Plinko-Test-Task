@@ -1,4 +1,5 @@
 ﻿using Game.Scripts.Gameplay;
+using Game.Scripts.GameScene.Gameplay;
 using Tools.Runtime;
 using UnityEngine;
 using UnityEngine.UI;
@@ -17,6 +18,11 @@ namespace Game.Scripts.MenuScene
         
         public void Clear()
         {
+            if (this == null)
+            {
+                return;
+            }
+            
             foreach (Transform child in _gridLayoutGroup.transform)
             {
                 Destroy(child.gameObject);
@@ -32,12 +38,16 @@ namespace Game.Scripts.MenuScene
         
         public void Show()
         {
-            gameObject.SetActive(true);
+            GameObject.SetActive(true);
         }
         
         public void Hide()
         {
-            gameObject.SetActive(false);
+            if (this == null)
+            {
+                return;
+            }
+            GameObject.SetActive(false);
         }
     }
 }

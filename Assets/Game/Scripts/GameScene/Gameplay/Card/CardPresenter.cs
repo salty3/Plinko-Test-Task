@@ -1,5 +1,6 @@
 ﻿using System;
 using Cysharp.Threading.Tasks;
+using UnityEngine;
 using UnityEngine.Events;
 
 namespace Game.Scripts.Gameplay.Card
@@ -48,6 +49,20 @@ namespace Game.Scripts.Gameplay.Card
         public void UnblockInteraction()
         {
             _isBlocked = false;
+        }
+        
+        public void SetAsMatched(bool hide = false)
+        {
+            _isBlocked = true;
+            if (hide)
+            {
+                _view.Hide();
+            }
+        }
+        
+        public UniTask PlayMatchedAnimation()
+        {
+            return _view.PlayMatchedAnimation();
         }
         
         private async UniTask OnClick()

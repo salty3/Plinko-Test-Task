@@ -20,17 +20,17 @@ namespace Game.Scripts.Gameplay.Card
         [SerializeField] private Image _frontImage;
         [SerializeField] private Image _backImage;
         
-        public RectTransform CardsContainer => _cardsContainer;
-        
         public UnityEvent OnClick { get; } = new();
 
         private Tween _tween;
-        
-        private bool _isCompleted;
 
-        public void SetAsCompleted()
+        private Transform _newParent;
+        private Transform _moveToPoint;
+        
+        public void SetAnimationTransforms(Transform newParent, Transform moveToPoint)
         {
-            _isCompleted = true;
+            _newParent = newParent;
+            _moveToPoint = moveToPoint;
         }
         
         public void SetFrontIcon(Sprite icon)
@@ -41,6 +41,11 @@ namespace Game.Scripts.Gameplay.Card
         public void SetBackIcon(Sprite back)
         {
             _backImage.sprite = back;
+        }
+
+        public void Hide()
+        {
+            _cardsContainer.gameObject.SetActive(false);
         }
 
         public async UniTask Select()
@@ -65,6 +70,17 @@ namespace Game.Scripts.Gameplay.Card
             await _tween;
         }
         
+        public async UniTask PlayMatchedAnimation()
+        {
+            _cardsContainer.SetParent(_newParent);
+            await DOTween.Sequence()
+                .Append(_cardsContainer.DOLocalMove(Vector3.zero, 0.3f))
+                .Append(_cardsContainer.DOScale(1.2f, 0.3f))
+                .Append(_cardsContainer.DOMove(_moveToPoint.position, 0.3f))
+                .Append(_cardsContainer.DOScale(0, 0.3f))
+                .AppendCallback(Hide);
+        }
+        
         private void ChangeSide(CardSide side)
         {
             bool isFront = side == CardSide.Front;
@@ -74,10 +90,6 @@ namespace Game.Scripts.Gameplay.Card
 
         public void OnPointerClick(PointerEventData eventData)
         {
-            if (_isCompleted)
-            {
-                return;
-            }
             OnClick.Invoke();
         }
     }

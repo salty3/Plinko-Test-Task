@@ -9,9 +9,15 @@ namespace Game.Scripts.Gameplay.InfoPanel
     {
         [SerializeField] private TMP_Text _matchCountText;
         [SerializeField] private TMP_Text _mismatchCountText;
+        [SerializeField] private TMP_Text _elapsedTimeText;
         [SerializeField] private Button _shuffleButton;
         
         public Button ShuffleButton => _shuffleButton;
+        
+        public void SetElapsedTimeText(string time)
+        {
+            _elapsedTimeText.text = time;
+        }
         
         public void SetMatchCount(int count)
         {

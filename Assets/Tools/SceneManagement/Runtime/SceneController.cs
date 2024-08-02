@@ -80,6 +80,10 @@ namespace Tools.SceneManagement.Runtime
         {
             var loadingScreen = await OpenLoadingScreen(sceneLoadingBuilder);
             var progress = GetProgress(loadingScreen);
+            if (sceneLoadingBuilder.SceneToClose != null)
+            {
+                await SceneManager.UnloadSceneAsync(sceneLoadingBuilder.SceneToClose.SceneName);
+            }
             await LoadScene(sceneLoadingBuilder, progress);
             await NotifyEntryPoint(sceneLoadingBuilder, progress);
 
@@ -87,11 +91,6 @@ namespace Tools.SceneManagement.Runtime
             {
                 await loadingScreen.Close();
             }
-        }
-
-        public void Close(SceneReference sceneReference)
-        {
-            SceneManager.UnloadSceneAsync(sceneReference.SceneName);
         }
     }
 }

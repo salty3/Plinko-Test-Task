@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "com.bgtools.playerprefseditor": "1.2.2",
     "com.cysharp.unitask": "2.5.5",
     "com.svermeulen.extenject": "https://github.com/Mathijs-Bakker/Extenject.git?path=UnityProject/Assets/Plugins/Zenject/Source#9.3.1",
     "com.unity.collab-proxy": "2.4.4",
@@ -7,7 +8,6 @@
     "com.unity.feature.mobile": "1.0.0",
     "com.unity.ide.rider": "3.0.31",
     "com.unity.ide.visualstudio": "2.0.22",
-    "com.unity.nuget.newtonsoft-json": "3.2.1",
     "com.unity.test-framework": "1.1.33",
     "com.unity.textmeshpro": "3.0.9",
     "com.unity.timeline": "1.7.6",
@@ -49,7 +49,8 @@
       "name": "package.openupm.com",
       "url": "https://package.openupm.com",
       "scopes": [
-        "com.cysharp.unitask"
+        "com.cysharp.unitask",
+        "com.bgtools.playerprefseditor"
       ]
     }
   ]

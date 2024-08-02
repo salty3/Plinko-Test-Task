@@ -1,14 +1,15 @@
 ﻿using System;
-using Newtonsoft.Json;
+using Tools.Runtime;
+using UnityEngine;
 
 namespace Game.Scripts.TimerSystem
 {
     // Should be matched with backend to avoid time cheating. Date time wrapper for now.
-    [JsonObject]
+    [Serializable]
     public struct BackendTime : IEquatable<BackendTime>
     {
-        [JsonProperty]
-        private DateTime _time;
+        [SerializeField]
+        private SerializableDateTime _time;
         
         public static BackendTime Now => DateTime.Now;
         public static BackendTime Unknown => DateTime.MinValue;
@@ -20,42 +21,42 @@ namespace Game.Scripts.TimerSystem
 
         public static TimeSpan operator -(BackendTime time1, BackendTime time2)
         {
-            return time1._time - time2._time;
+            return (DateTime) time1._time - time2._time;
         }
         
         public static BackendTime operator +(BackendTime time1, TimeSpan time2)
         {
-            return new BackendTime(time1._time + time2);
+            return new BackendTime((DateTime)time1._time + time2);
         }
         
         public static bool operator <=(BackendTime a, BackendTime b)
         {
-            return a._time <= b._time;
+            return (DateTime)a._time <= b._time;
         }
         
         public static bool operator >=(BackendTime a, BackendTime b)
         {
-            return a._time >= b._time;
+            return (DateTime)a._time >= b._time;
         }
         
         public static bool operator <(BackendTime a, BackendTime b)
         {
-            return a._time < b._time;
+            return (DateTime)a._time < b._time;
         }
         
         public static bool operator >(BackendTime a, BackendTime b)
         {
-            return a._time > b._time;
+            return (DateTime)a._time > b._time;
         }
 
         public static bool operator !=(BackendTime a, BackendTime b)
         {
-            return a._time != b._time;
+            return (DateTime)a._time != b._time;
         }
 
         public static bool operator ==(BackendTime a, BackendTime b)
         {
-            return a._time == b._time;
+            return (DateTime)a._time == b._time;
         }
 
         public static implicit operator DateTime(BackendTime time)

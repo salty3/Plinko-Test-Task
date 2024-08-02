@@ -2,33 +2,38 @@
 using System.Collections.Generic;
 using System.Threading;
 using Cysharp.Threading.Tasks;
+using Zenject;
 
 namespace Game.Scripts.TimerSystem
 {
     public class TimerService : ITimerService
     {
-        private readonly List<Timer> _timers = new();
+        private readonly List<Timer> _timers = new(10);
         
         public Timer CreateTimer()
         {
-            var timer = new Timer();
-            _timers.Add(timer);
-            return timer;
+            return CreateTimer(TimeSpan.Zero);
         }
 
-        public Timer CreateTimer(BackendTime startTime, TimeSpan duration)
+        public Timer CreateTimer(TimeSpan elapsedTime)
         {
-            var timer = new Timer(startTime, duration);
+            var timer = new Timer(elapsedTime);
             _timers.Add(timer);
+            timer.Stopped += () => OnTimerStopped(timer);
             return timer;
         }
 
-        public void OnEverySecondTick()
+        void ITickable.Tick()
         {
             for (var i = 0; i < _timers.Count; i++)
             {
-                _timers[i].OnEverySecondTick();
+                _timers[i].Tick();
             }
+        }
+        
+        private void OnTimerStopped(Timer timer)
+        {
+            _timers.Remove(timer);
         }
 
         public UniTask Initialize(CancellationToken token)

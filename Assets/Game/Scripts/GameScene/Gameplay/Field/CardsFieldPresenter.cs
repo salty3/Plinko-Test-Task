@@ -1,11 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Cysharp.Threading.Tasks;
+using Game.Scripts.FieldSystem;
 using Game.Scripts.Gameplay.Card;
+using Game.Scripts.GameScene.Gameplay;
+using Game.Scripts.GameScene.Gameplay.Card;
+using Game.Scripts.PlayerSystem;
 using Tools.Runtime;
 using UnityEngine;
 using UnityEngine.Events;
 using Zenject;
+using Random = UnityEngine.Random;
 
 namespace Game.Scripts.Gameplay
 {
@@ -15,24 +21,23 @@ namespace Game.Scripts.Gameplay
 
         private CardPresenter _selectedPresenter;
 
-        private readonly List<CardPresenter> _cardsOrder;
-        private readonly Dictionary<string, CardPresenterPair> _cards;
+        private List<CardPresenter> _cardPresenters;
         
         public UnityEvent<string> Matched { get; } = new();
         public UnityEvent Mismatched { get; } = new();
-        
-        private class CardPresenterPair
-        {
-            public CardPresenter CardPresenter1 { get; set; }
-            public CardPresenter CardPresenter2 { get; set; }
-        }
+
+        private IReadOnlyCardsFieldEntity _cardsFieldEntity;
+
+        private ILevelsService _levelsService;
+
+        private IReadOnlyLevelEntity _levelEntity;
         
         [Inject]
-        public CardsFieldPresenter(CardsFieldView view)
+        public CardsFieldPresenter(CardsFieldView view, ILevelsService levelsService, IReadOnlyLevelEntity levelEntity)
         {
             _view = view;
-            _cardsOrder = new List<CardPresenter>();
-            _cards = new Dictionary<string, CardPresenterPair>();
+            _levelsService = levelsService;
+            _levelEntity = levelEntity;
         }
         
         void IInitializable.Initialize()
@@ -42,7 +47,7 @@ namespace Game.Scripts.Gameplay
 
         public void BlockInteraction()
         {
-            foreach (var cardPresenter in _cardsOrder)
+            foreach (var cardPresenter in _cardPresenters)
             {
                 cardPresenter.BlockInteraction();
             }
@@ -50,7 +55,7 @@ namespace Game.Scripts.Gameplay
         
         public void UnblockInteraction()
         {
-            foreach (var cardPresenter in _cardsOrder)
+            foreach (var cardPresenter in _cardPresenters)
             {
                 cardPresenter.UnblockInteraction();
             }
@@ -83,41 +88,37 @@ namespace Game.Scripts.Gameplay
             Mismatched.Invoke();
         }
         
-        public void SetLevel(LevelData levelData)
+        public async UniTask SetField(IReadOnlyCardsFieldEntity cardsFieldEntity)
         {
-            foreach (var cardData in levelData.Cards)
-            {
-                var cardPresenter1 = CreateCardPresenter(cardData, levelData.CardBack);
-                var cardPresenter2 = CreateCardPresenter(cardData, levelData.CardBack);
-                
-                cardPresenter1.Deselect().Forget();
-                cardPresenter2.Deselect().Forget();
-                
-                _cardsOrder.Add(cardPresenter1);
-                _cardsOrder.Add(cardPresenter2);
-                
-                _cards[cardData.ID] = new CardPresenterPair()
-                {
-                    CardPresenter1 = cardPresenter1,
-                    CardPresenter2 = cardPresenter2
-                };
-            }
+            _cardsFieldEntity = cardsFieldEntity;
+            _cardPresenters = cardsFieldEntity.Cards.ToList().ConvertAll(CreateCardPresenter);
+            await UniTask.Delay(TimeSpan.FromSeconds(_view.GridMoveDuration));
         }
         
-        private CardPresenter CreateCardPresenter(CardData cardData, Sprite backIcon)
+        private CardPresenter CreateCardPresenter(IReadOnlyCardEntity cardEntity)
         {
-            var cardView = _view.CreateCardView(cardData, backIcon);
-            var cardPresenter = new CardPresenter(cardData.ID, cardView);
+            var levelData = _levelsService.GetLevelData(_levelEntity.LevelIndex);
+            var cardData = levelData.Cards.FirstOrDefault(cardData => cardData.ID == cardEntity.ID);
+            var cardView = _view.CreateCardView(cardData, levelData.CardBack);
+            var cardPresenter = new CardPresenter(cardEntity.ID, cardView);
+            cardPresenter.Deselect().Forget();
             cardPresenter.Clicked.AddListener(() => OnCardSelected(cardPresenter));
+            if (cardEntity.IsMatched)
+            {
+                cardPresenter.SetAsMatched(true);
+            }
             return cardPresenter;
         }
         
         public async UniTask Shuffle()
         {
-            _cardsOrder.Shuffle();
-            for (var i = 0; i < _cardsOrder.Count; i++)
+            int seed = Random.Range(int.MinValue, int.MaxValue);
+            _cardPresenters.Shuffle(seed);
+            _levelsService.ShuffleField(_levelEntity.LevelIndex, seed);
+
+            for (var i = 0; i < _cardPresenters.Count; i++)
             {
-                _cardsOrder[i].SetOrderIndex(i);
+                _cardPresenters[i].SetOrderIndex(i);
             }
 
             await UniTask.Delay(TimeSpan.FromSeconds(_view.GridMoveDuration));
@@ -125,14 +126,19 @@ namespace Game.Scripts.Gameplay
 
         public async UniTask ShowCardsFor(TimeSpan time)
         {
-            await UniTask.WhenAll(_cardsOrder.Select(cardPresenter => cardPresenter.Select()));
+            await UniTask.WhenAll(_cardPresenters.Select(cardPresenter => cardPresenter.Select()));
             await UniTask.Delay(time);
-            await UniTask.WhenAll(_cardsOrder.Select(cardPresenter => cardPresenter.Deselect()));
+            await UniTask.WhenAll(_cardPresenters.Select(cardPresenter => cardPresenter.Deselect()));
         }
         
         public void CompletePair(string id)
         {
-            _view.ShowCompletion(id).Forget();
+            var presenters = _cardPresenters.FindAll(p => p.ID == id);
+            foreach (var cardPresenter in presenters)
+            {
+                cardPresenter.SetAsMatched();
+                cardPresenter.PlayMatchedAnimation().Forget();
+            }
         }
     }
 }

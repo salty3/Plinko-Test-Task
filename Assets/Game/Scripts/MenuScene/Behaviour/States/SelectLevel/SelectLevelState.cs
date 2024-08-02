@@ -1,5 +1,7 @@
 ﻿using Cysharp.Threading.Tasks;
+using Game.Scripts.FieldSystem;
 using Game.Scripts.Gameplay;
+using Game.Scripts.GameScene.Gameplay;
 using Tools.SceneManagement.Runtime;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -9,20 +11,20 @@ namespace Game.Scripts.MenuScene
 {
     public class SelectLevelState : MenuState
     {
-        private readonly LevelsCollection _levelsCollection;
+        private readonly ILevelsService _levelsService;
         private readonly SelectLevelScreenView _view;
         private readonly MenuStateManager _menuStateManager;
         private readonly SceneController _sceneController;
         private readonly SceneReferences _sceneReferences;
 
         [Inject]
-        public SelectLevelState(LevelsCollection levelsCollection,
+        public SelectLevelState(ILevelsService levelsService,
             SelectLevelScreenView view, 
             MenuStateManager menuStateManager,
             SceneController sceneController, 
             SceneReferences sceneReferences)
         {
-            _levelsCollection = levelsCollection;
+            _levelsService = levelsService;
             _view = view;
             _menuStateManager = menuStateManager;
             _sceneController = sceneController;
@@ -34,23 +36,29 @@ namespace Game.Scripts.MenuScene
             _menuStateManager.SwitchToState<MainMenuState>();
         }
         
-        private async UniTask LoadLevel(LevelData levelData)
+        private async UniTask LoadLevel(IReadOnlyLevelEntity levelEntity)
         {
             var builder = _sceneReferences.GameScene.LoadScene()
                 .WithLoadingScreen(_sceneReferences.Loading)
                 .WithMode(LoadSceneMode.Additive)
-                .WithRegistrations(container => container.BindInstance(levelData).AsSingle());
+                .WithClosing(_sceneReferences.MainMenu)
+                .WithRegistrations(container => container.BindInstance(levelEntity).AsSingle());
 
             await _sceneController.LoadAsync(builder);
-            _sceneController.Close(_sceneReferences.MainMenu);
         }
 
         public override void Initialize()
         {
-            foreach (var levelData in _levelsCollection.Levels)
+            //Inefficient workaround :)
+            foreach (var levelEntity in _levelsService.Levels)
             {
+                var levelData = _levelsService.GetLevelData(levelEntity.LevelIndex);
                 var button = _view.CreateLevelButton(levelData);
-                button.Button.onClick.AddListener(() => LoadLevel(levelData).Forget());
+                if (levelEntity.IsCompleted)
+                {
+                    button.SetAsCompleted();
+                }
+                button.Button.onClick.AddListener(() => LoadLevel(levelEntity).Forget());
             }
             
             _view.BackButton.onClick.AddListener(OnBackButtonClicked);

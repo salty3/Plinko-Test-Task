@@ -33,7 +33,7 @@ namespace Tools.Runtime.StateBehaviour
             _scopedContainer = container.CreateSubContainer();
             foreach (var type in types)
             {
-                _scopedContainer.BindInterfacesAndSelfTo(type).AsSingle();
+                _scopedContainer.Bind(type).AsSingle();
             }
             _state = null;
         }

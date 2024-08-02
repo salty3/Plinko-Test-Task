@@ -1,88 +1,49 @@
 ﻿using System;
+using Zenject;
 
 namespace Game.Scripts.TimerSystem
 {
-    public class Timer : IReadOnlyTimer, IEverySecondTickable
+    public class Timer : ITickable, IDisposable
     {
-        public TimeSpan RemainingTime { get; private set; } = TimeSpan.Zero;
-        public TimeSpan ElapsedTime { get; private set; } = TimeSpan.Zero;
-        public bool IsEnded { get; private set; } = false;
-        public bool IsRunning { get; private set; } = false;
+        public TimeSpan ElapsedTime { get; private set; }
+        public bool IsRunning { get; private set; }
+        public event Action Updated;
+        public event Action Stopped;
+        
+        private BackendTime _lastTickTime;
 
-        private BackendTime _startTime;
-        private TimeSpan _duration;
-
-        public Timer()
+        public Timer(TimeSpan elapsedTime)
         {
-            
+            ElapsedTime = elapsedTime;
         }
         
-        public Timer(BackendTime startTime, TimeSpan duration)
+        public void Tick()
         {
-            SetDuration(duration);
-            _startTime = startTime;
-            if (_startTime != BackendTime.Unknown)
+            if (!IsRunning)
             {
-                IsRunning = true;
+                return;
             }
+            
+            ElapsedTime += BackendTime.Now - _lastTickTime;
+            _lastTickTime = BackendTime.Now;
+            Updated?.Invoke();
+        }
+
+        public void Dispose()
+        {
+            IsRunning = false;
+            Stopped?.Invoke();
+            Stopped = null;
         }
 
         public void Start()
         {
-            if (IsRunning)
-            {
-                return;
-            }
-
-            _startTime = BackendTime.Now;
+            _lastTickTime = BackendTime.Now;
             IsRunning = true;
         }
-
-        public void Reset()
-        {
-            _startTime = BackendTime.Unknown;
-            RemainingTime = TimeSpan.Zero;
-            ElapsedTime = TimeSpan.Zero;
-            IsEnded = false;
-            IsRunning = false;
-        }
         
-        public void SetDuration(TimeSpan duration)
+        public void Pause()
         {
-            if (IsEnded)
-            {
-                return;
-            }
-            
-            _duration = duration;
-
-            if (IsRunning)
-            {
-                return;
-            }
-            
-            RemainingTime = duration;
-        }
-        
-        public void OnEverySecondTick()
-        {
-            if (!IsRunning || IsEnded)
-            {
-                return;
-            }
-            
-            ElapsedTime = BackendTime.Now - _startTime;
-            RemainingTime = _duration - ElapsedTime;
-            
-            if (RemainingTime <= TimeSpan.Zero)
-            {
-                OnTimerEnd();
-            }
-        }
-        
-        private void OnTimerEnd()
-        {
-            IsEnded = true;
             IsRunning = false;
         }
     }

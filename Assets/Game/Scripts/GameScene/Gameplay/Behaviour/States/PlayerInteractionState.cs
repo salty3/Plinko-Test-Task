@@ -1,4 +1,6 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
+using Game.Scripts.FieldSystem;
 using Game.Scripts.Gameplay;
 using Game.Scripts.Gameplay.InfoPanel;
 using Zenject;
@@ -7,6 +9,7 @@ namespace Game.Scripts.GameScene.Gameplay.Behaviour.States
 {
     public class PlayerInteractionState : GameState
     {
+        private readonly IReadOnlyLevelEntity _levelEntity;
         private readonly CardsFieldPresenter _cardsFieldPresenter;
         private readonly GameplayLoopStateManager _gameplayLoopStateManager;
         
@@ -18,15 +21,22 @@ namespace Game.Scripts.GameScene.Gameplay.Behaviour.States
         private readonly int _maxMismatchesCount;
 
         private readonly InfoPanelPresenter _infoPanelPresenter;
+
+        private readonly ILevelsService _levelsService;
         
         [Inject]
-        public PlayerInteractionState(CardsFieldPresenter cardsFieldPresenter, GameplayLoopStateManager gameplayLoopStateManager, LevelData levelData, InfoPanelPresenter infoPanelPresenter)
+        public PlayerInteractionState(IReadOnlyLevelEntity levelEntity, CardsFieldPresenter cardsFieldPresenter, GameplayLoopStateManager gameplayLoopStateManager, InfoPanelPresenter infoPanelPresenter, ILevelsService levelsService)
         {
+            _levelEntity = levelEntity;
             _cardsFieldPresenter = cardsFieldPresenter;
             _gameplayLoopStateManager = gameplayLoopStateManager;
             _infoPanelPresenter = infoPanelPresenter;
+            _levelsService = levelsService;
+            var levelData = _levelsService.GetLevelData(levelEntity.LevelIndex);
             _maxMatchesCount = levelData.Cards.Count();
             _maxMismatchesCount = levelData.MaxMismatchCount;
+            _matchesCount = levelEntity.MatchesCount;
+            _mismatchesCount = levelEntity.MismatchesCount;
         }
         
         public override void Initialize()
@@ -36,6 +46,10 @@ namespace Game.Scripts.GameScene.Gameplay.Behaviour.States
             _infoPanelPresenter.ShuffleButtonClicked.AddListener(OnShuffleButtonClicked);
             
             _cardsFieldPresenter.UnblockInteraction();
+            
+            //There should be some reactive way to update the UI
+            _infoPanelPresenter.SetMatchCount(_matchesCount);
+            _infoPanelPresenter.SetMismatchCount(_mismatchesCount);
         }
 
         public override void Dispose()
@@ -55,10 +69,16 @@ namespace Game.Scripts.GameScene.Gameplay.Behaviour.States
         private void OnMatch(string pairId)
         {
             _matchesCount++;
+            
+            _levelsService.AddMatch(_levelEntity.LevelIndex);
+            _levelsService.CompletePair(_levelEntity.LevelIndex, pairId);
             _cardsFieldPresenter.CompletePair(pairId);
+            
+            
             _infoPanelPresenter.SetMatchCount(_matchesCount);
             if (_matchesCount == _maxMatchesCount)
             {
+                _levelsService.SetAsCompleted(_levelEntity.LevelIndex, _matchesCount);
                 _gameplayLoopStateManager.SwitchToState<WinState>();
             }
         }
@@ -66,8 +86,11 @@ namespace Game.Scripts.GameScene.Gameplay.Behaviour.States
         private void OnMismatch()
         {
             _mismatchesCount++;
+            
+            _levelsService.AddMismatch(_levelEntity.LevelIndex);
+            
             _infoPanelPresenter.SetMismatchCount(_mismatchesCount);
-            if (_mismatchesCount == _maxMismatchesCount)
+            if (_mismatchesCount >= _maxMismatchesCount)
             {
                 _gameplayLoopStateManager.SwitchToState<LoseState>();
             }
