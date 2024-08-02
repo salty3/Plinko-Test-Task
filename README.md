@@ -36,9 +36,9 @@ Chosen for its simplicity over Unity's animation system for this task.
 ### UniTask
 Preferred for its clarity over coroutines.
 
-### SmoothLayout
-[Link to SmoothLayout](https://gist.github.com/codorizzi/79aab1ae7d7940fe3e3603af61cd8617)  
+### [SmoothLayout](https://gist.github.com/codorizzi/79aab1ae7d7940fe3e3603af61cd8617)
 Used for cards shuffle animation.
+
 ---
 
 The completion of this test assignment took ~24 hours.
