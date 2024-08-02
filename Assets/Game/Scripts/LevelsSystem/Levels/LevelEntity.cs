@@ -63,7 +63,7 @@ namespace Game.Scripts.LevelsSystem.Levels
         
         public void CreateField(LevelData levelData, out bool newField)
         {
-            if (_saveData.FieldSaveData != null)
+            if (_saveData.FieldSaveData != null && _saveData.FieldSaveData.Cards.Count > 0)
             {
                 newField = false;
                 //Just use save if exists

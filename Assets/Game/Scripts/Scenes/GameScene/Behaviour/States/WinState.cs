@@ -40,10 +40,13 @@ namespace Game.Scripts.Scenes.GameScene.Behaviour.States
         public override void Initialize()
         {
             _timer.Dispose();
+            _levelsService.SetAsCompleted(_levelEntity.LevelIndex);
             _winScreenPresenter.ToMainMenuClicked.AddListener(OnToMainMenuClicked);
             _winScreenPresenter.PlayNextLevelClicked.AddListener(OnPlayNextLevelClicked);
             _winScreenPresenter.Show();
             _winScreenPresenter.SetPlayedTime(_timer.ElapsedTime);
+            
+           
 
             var nextLevelData = _levelsService.GetLevelData(_levelEntity.LevelIndex + 1);
             if (nextLevelData == null)

@@ -19,6 +19,10 @@ namespace Game.Scripts.Scenes.MenuScene.Behaviour.States.MainMenu
         
         public void Hide()
         {
+            if (this == null)
+            {
+                return;
+            }
             gameObject.SetActive(false);
         }
     }
