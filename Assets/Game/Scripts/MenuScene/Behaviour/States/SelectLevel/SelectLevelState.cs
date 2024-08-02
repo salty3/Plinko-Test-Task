@@ -49,6 +49,8 @@ namespace Game.Scripts.MenuScene
 
         public override void Initialize()
         {
+            int unlockedLevelIndex = _levelsService.GetUnlockedLevel();
+            
             //Inefficient workaround :)
             foreach (var levelEntity in _levelsService.Levels)
             {
@@ -56,7 +58,12 @@ namespace Game.Scripts.MenuScene
                 var button = _view.CreateLevelButton(levelData);
                 if (levelEntity.IsCompleted)
                 {
-                    button.SetAsCompleted();
+                    button.SetAsCompleted(levelEntity.ElapsedTime);
+                }
+
+                if (levelEntity.LevelIndex != unlockedLevelIndex)
+                {
+                    button.SetAsLocked();
                 }
                 button.Button.onClick.AddListener(() => LoadLevel(levelEntity).Forget());
             }

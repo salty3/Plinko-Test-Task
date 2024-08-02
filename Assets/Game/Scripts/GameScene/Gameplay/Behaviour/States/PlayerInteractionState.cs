@@ -78,7 +78,7 @@ namespace Game.Scripts.GameScene.Gameplay.Behaviour.States
             _infoPanelPresenter.SetMatchCount(_matchesCount);
             if (_matchesCount == _maxMatchesCount)
             {
-                _levelsService.SetAsCompleted(_levelEntity.LevelIndex, _matchesCount);
+                _levelsService.SetAsCompleted(_levelEntity.LevelIndex);
                 _gameplayLoopStateManager.SwitchToState<WinState>();
             }
         }

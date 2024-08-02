@@ -7,6 +7,8 @@ using Game.Scripts.TimerSystem;
 using Tools.Runtime;
 using Tools.SceneManagement.Runtime;
 using UnityEngine;
+using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 using Zenject;
 
 namespace Game.Scripts.GameScene.GameSceneEntry
@@ -14,6 +16,10 @@ namespace Game.Scripts.GameScene.GameSceneEntry
     public class GameSceneEntryPoint : CachedMonoBehaviour, ISceneEntryPoint
     {
         [SerializeField] private SceneContext _sceneContext;
+        
+        //Kinda workaround
+        [SerializeField] private Image _backgroundImage;
+        [SerializeField] private Button _backButton;
 
         private Timer _timer;
         private ILevelsService _levelsService;
@@ -35,10 +41,29 @@ namespace Game.Scripts.GameScene.GameSceneEntry
             _sceneContext.Run();
             _sceneContext.Container.Resolve<GameplayLoopStateManager>().SwitchToState<PreparationPhaseState>();
 
+            
+            var levelData = _levelsService.GetLevelData(_levelEntity.LevelIndex);
+            _backgroundImage.sprite = levelData.LevelBackground;
+            
+            _backButton.onClick.AddListener(ReturnToMenu);
+            
             _timer.Updated += UpdateTimer;
             
             progress.Report(1f);
             return UniTask.CompletedTask;
+        }
+        
+        private void ReturnToMenu()
+        {
+            var sceneController = _sceneContext.Container.Resolve<SceneController>();
+            var sceneReferences = _sceneContext.Container.Resolve<SceneReferences>();
+
+            var builder = sceneReferences.MainMenu.LoadScene()
+                .WithLoadingScreen(sceneReferences.Loading)
+                .WithMode(LoadSceneMode.Additive)
+                .WithClosing(sceneReferences.GameScene);
+            
+            sceneController.LoadAsync(builder).Forget();
         }
 
         private void UpdateTimer()

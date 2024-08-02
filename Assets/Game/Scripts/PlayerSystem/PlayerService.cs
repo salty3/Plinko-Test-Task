@@ -66,10 +66,5 @@ namespace Game.Scripts.PlayerSystem
         {
             Save().Forget();
         }
-
-        public void Dispose()
-        {
-            Save().Forget();
-        }
     }
 }

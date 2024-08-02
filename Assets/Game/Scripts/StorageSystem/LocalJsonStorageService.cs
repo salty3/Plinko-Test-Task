@@ -8,8 +8,16 @@ namespace Game.Scripts.StorageSystem
 {
     public class LocalJsonStorageService : IStorageService
     {
+        private bool _saveInProgress;
+        
         public async UniTask<bool> Save(string key, object data)
         {
+            if (_saveInProgress)
+            {
+                return false;
+            }
+            
+            _saveInProgress = true;
             var path = BuildPath(key);
             await UniTask.RunOnThreadPool(async () =>
             {
@@ -21,7 +29,7 @@ namespace Game.Scripts.StorageSystem
                 await streamWriter.WriteAsync(encodedJson);
             });
             
-
+            _saveInProgress = false;
             return true;
         }
 

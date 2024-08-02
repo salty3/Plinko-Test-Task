@@ -9,8 +9,6 @@ namespace Game.Scripts.GameScene.Gameplay
     public class LevelData : ScriptableObject
     {
         private const int MAX_PAIRS = 12;
-        
-        [field: SerializeField] public string ID { get; private set; }
         [field: SerializeField] public Sprite LevelPreviewIcon { get; private set; }
         [field: SerializeField] public Sprite CardBack { get; private set; }
         [field: SerializeField] public Sprite LevelBackground { get; private set; }

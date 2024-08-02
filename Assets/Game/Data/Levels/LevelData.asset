@@ -12,10 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 18f41fcc971548148430e52a367b3c91, type: 3}
   m_Name: LevelData
   m_EditorClassIdentifier: 
-  <LevelPreviewIcon>k__BackingField: {fileID: 21300000, guid: 4da06cfe677fba94c836b9bbbd9c8f22, type: 3}
+  <LevelPreviewIcon>k__BackingField: {fileID: 1206864932, guid: d897f0310e1290b4295ad1819f0dfbd5, type: 3}
   <CardBack>k__BackingField: {fileID: 1448275080, guid: f107ccf493b5f75498f9b8c53907cd1a, type: 3}
-  <LevelBackground>k__BackingField: {fileID: 0}
-  <MaxMismatchCount>k__BackingField: 4
+  <LevelBackground>k__BackingField: {fileID: 21300000, guid: 32c8838c28feef849bee9d8776cfdf31, type: 3}
+  <MaxMismatchCount>k__BackingField: 5
   _cards:
   - {fileID: 11400000, guid: d023fafa506a72540bcfe0bb8b8ca78b, type: 2}
   - {fileID: 11400000, guid: 9ffeb1f9f45a9a7488c9125ebc52c116, type: 2}

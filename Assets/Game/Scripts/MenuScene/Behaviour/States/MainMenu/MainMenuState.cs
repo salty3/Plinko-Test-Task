@@ -1,4 +1,5 @@
 ﻿using Game.Scripts.MenuScene.States.Settings;
+using UnityEngine;
 using UnityEngine.Events;
 using Zenject;
 
@@ -34,7 +35,8 @@ namespace Game.Scripts.MenuScene
         
         private void OpenSettings()
         {
-            _menuStateManage.SwitchToState<SettingsState>();
+            Debug.Log("Not today, buddy");
+            //_menuStateManage.SwitchToState<SettingsState>();
         }
         
         private void OpenSelectLevel()

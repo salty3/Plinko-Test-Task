@@ -57,10 +57,10 @@ namespace Game.Scripts.FieldSystem
             levelEntity.CreateField(levelData, out newField);
         }
 
-        public void SetAsCompleted(int levelIndex, int score)
+        public void SetAsCompleted(int levelIndex)
         {
             var levelEntity = _levelEntities[levelIndex];
-            levelEntity.SetAsCompleted(score);
+            levelEntity.SetAsCompleted();
         }
 
         public void CompletePair(int levelIndex, string id)
@@ -97,6 +97,11 @@ namespace Game.Scripts.FieldSystem
         {
             var levelEntity = _levelEntities[levelIndex];
             levelEntity.ElapsedTime = time;
+        }
+        
+        public int GetUnlockedLevel()
+        {
+            return _levelEntities.FindIndex(entity => !entity.IsCompleted);
         }
 
         public LevelData GetLevelData(int levelIndex)

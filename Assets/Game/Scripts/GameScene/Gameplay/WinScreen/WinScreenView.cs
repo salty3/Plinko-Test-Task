@@ -11,7 +11,6 @@ namespace Game.Scripts.GameScene.Gameplay.WinScreen
         [SerializeField] private TMP_Text _playedTimeText;
         [SerializeField] private Button _playNextLevelButton;
         [SerializeField] private Button _toMainMenuButton;
-        [SerializeField] private TMP_Text _scoreText;
 
         public UnityEvent PlayNextLevelClicked => _playNextLevelButton.onClick;
         public UnityEvent ToMainMenuClicked => _toMainMenuButton.onClick;
@@ -24,11 +23,6 @@ namespace Game.Scripts.GameScene.Gameplay.WinScreen
         public void SetPlayedTime(string text)
         {
             _playedTimeText.text = text;
-        }
-        
-        public void SetScore(string scoreText)
-        {
-            _scoreText.text = scoreText;
         }
         
         public void Show()

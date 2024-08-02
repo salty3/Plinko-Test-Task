@@ -10,6 +10,8 @@ namespace Game.Scripts.StorageSystem
     //Not really understood wdym by "base64" but here is a binary storage.
     public class BinaryStorageService : IStorageService
     {
+        private bool _saveInProgress;
+        
         public UniTask Initialize(CancellationToken token)
         {
             return default;
@@ -17,6 +19,12 @@ namespace Game.Scripts.StorageSystem
 
         public async UniTask<bool> Save(string key, object data)
         {
+            if (_saveInProgress)
+            {
+                return false;
+            }
+            
+            _saveInProgress = true;
             var path = BuildPath(key);
             await UniTask.RunOnThreadPool(async () =>
             {
@@ -24,7 +32,8 @@ namespace Game.Scripts.StorageSystem
                 await using var fileStream = new FileStream(path, FileMode.OpenOrCreate);
                 formatter.Serialize(fileStream, data);
             });
-
+            
+            _saveInProgress = false;
             return true;
         }
 

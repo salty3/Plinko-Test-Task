@@ -34,11 +34,6 @@ namespace Game.Scripts.GameScene.Gameplay.WinScreen
         {
             _view.SetPlayedTime(time.ToString(@"mm\:ss"));
         }
-
-        public void SetScore(string scoreText)
-        {
-            _view.SetScore(scoreText);
-        }
         
         public void Show()
         {

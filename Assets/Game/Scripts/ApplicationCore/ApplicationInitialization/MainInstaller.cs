@@ -16,9 +16,9 @@ namespace Game.Scripts
             //Services initialization order depends on binding order
             
             
-            Container.BindInterfacesTo<LocalJsonStorageService>().AsSingle(); // Encoded Json -> file
+            //Container.BindInterfacesTo<LocalJsonStorageService>().AsSingle(); // Encoded Json -> file
             //Container.BindInterfacesTo<BinaryStorageService>().AsSingle(); // Binary -> file
-            //Container.BindInterfacesTo<PrefsStorageService>().AsSingle(); // Json -> PlayerPrefs
+            Container.BindInterfacesTo<PrefsStorageService>().AsSingle(); // Json -> PlayerPrefs
             
             
             Container.BindInterfacesTo<PlayerService>().AsSingle();

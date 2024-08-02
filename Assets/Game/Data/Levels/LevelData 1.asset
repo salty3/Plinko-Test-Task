@@ -12,9 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 18f41fcc971548148430e52a367b3c91, type: 3}
   m_Name: LevelData 1
   m_EditorClassIdentifier: 
-  <LevelPreviewIcon>k__BackingField: {fileID: 21300000, guid: 4da06cfe677fba94c836b9bbbd9c8f22, type: 3}
-  <CardBack>k__BackingField: {fileID: 1448275080, guid: f107ccf493b5f75498f9b8c53907cd1a, type: 3}
-  <LevelBackground>k__BackingField: {fileID: 0}
+  <LevelPreviewIcon>k__BackingField: {fileID: -1287046622, guid: d897f0310e1290b4295ad1819f0dfbd5, type: 3}
+  <CardBack>k__BackingField: {fileID: -686810533, guid: f107ccf493b5f75498f9b8c53907cd1a, type: 3}
+  <LevelBackground>k__BackingField: {fileID: 21300000, guid: 282f0f2db00459c45bae228d252b3c7b, type: 3}
+  <MaxMismatchCount>k__BackingField: 10
   _cards:
   - {fileID: 11400000, guid: d023fafa506a72540bcfe0bb8b8ca78b, type: 2}
   - {fileID: 11400000, guid: 9ffeb1f9f45a9a7488c9125ebc52c116, type: 2}
@@ -23,7 +24,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 28d71d9a22587414eabf8717542a7609, type: 2}
   - {fileID: 11400000, guid: 7a3eee0e339ae1a45ba9f11d99ef63b4, type: 2}
   - {fileID: 11400000, guid: 90362a37e49099644bcc1412253fe33a, type: 2}
-  - {fileID: 11400000, guid: d40fe35cc6be623489e0c5143df690f9, type: 2}
+  - {fileID: 11400000, guid: 225324660b243d847aaa7d4afb73b417, type: 2}
   - {fileID: 11400000, guid: 7d1d5c6f1744e1d4a93479ad2d6114e8, type: 2}
   - {fileID: 11400000, guid: f8be602cd8a9c35479a2a40826b559ec, type: 2}
   - {fileID: 11400000, guid: 1324c13da092d9a479d763ce0a67beb9, type: 2}

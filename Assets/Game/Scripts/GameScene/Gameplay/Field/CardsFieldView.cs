@@ -22,9 +22,11 @@ namespace Game.Scripts.Gameplay
 
         public float GridMoveDuration => _gridParent.moveDuration;
 
-        public void Initialize()
+        protected override async void Start()
         {
-            var sizeMultiplier = RectTransform.sizeDelta / _referenceFieldSize;
+            // Waiting for rectT updates :(
+            await UniTask.DelayFrame(2);
+            var sizeMultiplier = RectTransform.rect.size / _referenceFieldSize;
             var cellSize = _referenceCellSize * sizeMultiplier;
             _gridParent.cellSize = cellSize;
         }

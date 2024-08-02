@@ -11,7 +11,6 @@ namespace Game.Scripts.FieldSystem
         int LevelIndex { get; }
         IReadOnlyCardsFieldEntity Field { get; }
         bool IsCompleted { get; }
-        int CompletedScore { get; }
         TimeSpan ElapsedTime { get; }
         int MatchesCount { get; }
         int MismatchesCount { get; }
@@ -31,12 +30,6 @@ namespace Game.Scripts.FieldSystem
         {
             get => _saveData.IsCompleted;
             private set => _saveData.IsCompleted = value;
-        }
-        
-        public int CompletedScore
-        {
-            get => _saveData.CompletedScore;
-            private set => _saveData.CompletedScore = value;
         }
         
         public TimeSpan ElapsedTime
@@ -63,10 +56,9 @@ namespace Game.Scripts.FieldSystem
             _field = saveData.FieldSaveData != null ? new CardsFieldEntity(saveData.FieldSaveData) : null;
         }
         
-        public void SetAsCompleted(int score)
+        public void SetAsCompleted()
         {
             IsCompleted = true;
-            CompletedScore = score;
             _field = null;
             _saveData.FieldSaveData = null;
         }
@@ -108,7 +100,6 @@ namespace Game.Scripts.FieldSystem
         public void Reset()
         {
             IsCompleted = false;
-            CompletedScore = 0;
             ElapsedTime = TimeSpan.Zero;
             MatchesCount = 0;
             MismatchesCount = 0;
@@ -123,7 +114,6 @@ namespace Game.Scripts.FieldSystem
             [field: SerializeField] public int LevelIndex { get; set; }
             [field: SerializeField] public CardsFieldEntity.SaveData FieldSaveData { get; set; }
             [field: SerializeField] public bool IsCompleted { get; set; }
-            [field: SerializeField] public int CompletedScore { get; set; }
             [field: SerializeField] public long ElapsedTime { get; set; } 
             [field: SerializeField] public int MatchesCount { get; set; }
             [field: SerializeField] public int MismatchesCount { get; set; }

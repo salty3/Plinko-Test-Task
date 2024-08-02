@@ -21,12 +21,12 @@ namespace Game.Scripts.Gameplay.InfoPanel
         
         public void SetMatchCount(int count)
         {
-            _matchCountText.text = count.ToString();
+            _matchCountText.text = $"Matches: {count}";
         }
         
         public void SetMismatchCount(int count)
         {
-            _mismatchCountText.text = count.ToString();
+            _mismatchCountText.text = $"Mismatches: {count}";
         }
     }
 }

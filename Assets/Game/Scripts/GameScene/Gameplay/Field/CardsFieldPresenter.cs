@@ -15,7 +15,7 @@ using Random = UnityEngine.Random;
 
 namespace Game.Scripts.Gameplay
 {
-    public class CardsFieldPresenter : IInitializable
+    public class CardsFieldPresenter
     {
         private readonly CardsFieldView _view;
 
@@ -25,9 +25,7 @@ namespace Game.Scripts.Gameplay
         
         public UnityEvent<string> Matched { get; } = new();
         public UnityEvent Mismatched { get; } = new();
-
-        private IReadOnlyCardsFieldEntity _cardsFieldEntity;
-
+        
         private ILevelsService _levelsService;
 
         private IReadOnlyLevelEntity _levelEntity;
@@ -38,11 +36,6 @@ namespace Game.Scripts.Gameplay
             _view = view;
             _levelsService = levelsService;
             _levelEntity = levelEntity;
-        }
-        
-        void IInitializable.Initialize()
-        {
-            _view.Initialize();
         }
 
         public void BlockInteraction()
@@ -90,7 +83,6 @@ namespace Game.Scripts.Gameplay
         
         public async UniTask SetField(IReadOnlyCardsFieldEntity cardsFieldEntity)
         {
-            _cardsFieldEntity = cardsFieldEntity;
             _cardPresenters = cardsFieldEntity.Cards.ToList().ConvertAll(CreateCardPresenter);
             await UniTask.Delay(TimeSpan.FromSeconds(_view.GridMoveDuration));
         }
