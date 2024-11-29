@@ -42,8 +42,8 @@ namespace Game.Scripts.PlayerSystem
         {
             if (_playerSaveData != null)
             {
-                //This file may be massive for client-backend ping-pong. We can consider to do "changed" flags and send only changed parts of the file
-                await _storageService.Save(PLAYER_KEY, _playerSaveData);
+                //This file may be massive for client-backend ping-pong. We can consider make "changed" flags and send only changed parts of the file
+                await _storageService.Save(PLAYER_KEY, _playerSaveData.DeepClone());
             }
         }
 

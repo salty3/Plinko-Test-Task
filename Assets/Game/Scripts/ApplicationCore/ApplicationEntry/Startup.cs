@@ -9,7 +9,6 @@ namespace Game.Scripts.ApplicationCore.ApplicationEntry
     //Game entry point
     public class Startup : MonoBehaviour
     {
-        //Dont really like built-in project context. This gives some more controlling over contexts.
         [SerializeField] private SceneContext _projectContext;
 
         private static Startup _instance;
@@ -20,7 +19,6 @@ namespace Game.Scripts.ApplicationCore.ApplicationEntry
         private void Awake()
         {
             _instance = this;
-            //Kinda awkward VContainer-like parenting flow :)
             _projectContext.ContractNames = new[] { nameof(Startup) };
             _projectContext.Run();
             _sceneController = _projectContext.Container.Resolve<SceneController>();

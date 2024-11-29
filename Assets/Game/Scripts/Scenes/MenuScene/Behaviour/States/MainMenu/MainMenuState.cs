@@ -1,5 +1,4 @@
-﻿using Game.Scripts.Scenes.MenuScene.Behaviour.States.SelectLevel;
-using UnityEngine;
+﻿using UnityEngine;
 using Zenject;
 
 namespace Game.Scripts.Scenes.MenuScene.Behaviour.States.MainMenu
@@ -18,7 +17,6 @@ namespace Game.Scripts.Scenes.MenuScene.Behaviour.States.MainMenu
         
         public override void Initialize()
         {
-            _view.SelectLevelButton.onClick.AddListener(OpenSelectLevel);
             _view.SettingsButton.onClick.AddListener(OpenSettings);
             
             _view.Show();
@@ -26,7 +24,6 @@ namespace Game.Scripts.Scenes.MenuScene.Behaviour.States.MainMenu
 
         public override void Dispose()
         {
-            _view.SelectLevelButton.onClick.RemoveListener(OpenSelectLevel);
             _view.SettingsButton.onClick.RemoveListener(OpenSettings);
             
             _view.Hide();
@@ -34,13 +31,7 @@ namespace Game.Scripts.Scenes.MenuScene.Behaviour.States.MainMenu
         
         private void OpenSettings()
         {
-            Debug.Log("Not today, buddy");
-            //_menuStateManage.SwitchToState<SettingsState>();
-        }
-        
-        private void OpenSelectLevel()
-        {
-            _menuStateManage.SwitchToState<SelectLevelState>();
+           
         }
     }
 }

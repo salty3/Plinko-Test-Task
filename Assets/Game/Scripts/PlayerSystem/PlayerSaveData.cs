@@ -1,14 +1,18 @@
 ﻿using System;
-using System.Collections.Generic;
-using Game.Scripts.LevelsSystem.Levels;
-using UnityEngine;
+using Game.Scripts.ApplicationCore;
 
 namespace Game.Scripts.PlayerSystem
 {
-    //If we want to do something on backend side with this - do copy of this class in backend project
+    //If we want to do something on backend side with this - make copy of this class in backend project
     [Serializable]
-    public class PlayerSaveData
+    public class PlayerSaveData : IDeepCloneable<PlayerSaveData>
     {
-        [field: SerializeField] public List<LevelEntity.SaveData> LevelsSaveData { get; set; } = new();
+        public PlayerSaveData DeepClone()
+        {
+            return new PlayerSaveData
+            {
+                
+            };
+        }
     }
 }
