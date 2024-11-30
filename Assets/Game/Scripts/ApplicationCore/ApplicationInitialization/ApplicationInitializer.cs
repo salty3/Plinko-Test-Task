@@ -49,7 +49,7 @@ namespace Game.Scripts.ApplicationCore.ApplicationInitialization
 
         private async UniTask LoadFirstScene()
         {
-            var builder = _sceneRefs.MainMenu
+            var builder = _sceneRefs.GameScene
                 .LoadScene()
                 .WithMode(LoadSceneMode.Additive);
 

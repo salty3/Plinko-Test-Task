@@ -1,5 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using UnityEngine;
+using Random = System.Random;
 
 namespace Game.Scripts
 {
@@ -9,9 +10,11 @@ namespace Game.Scripts
         
         public IEnumerable<BallFallTurn> Turns => _turns;
         
+        public int ResultHole => _turns[^1].Position;
+        
         public PlinkoRoll(int rowsCount)
         {
-            _turns = new BallFallTurn[rowsCount + 1];
+            _turns = new BallFallTurn[rowsCount];
         }
         
         public void AddTurn(int turnIndex, BallFallTurn turn)
@@ -29,7 +32,7 @@ namespace Game.Scripts
     {
         private int _rowsCount;
         
-        private const int FIRST_ROW_PEGS_COUNT = 3;
+        private const int FIRST_ROW_PINS_COUNT = 3;
         
         public PlinkoCore(int rowsCount)
         {
@@ -41,7 +44,7 @@ namespace Game.Scripts
             var plinkoRoll = new PlinkoRoll(_rowsCount);
             
             int currentPosition = 0;
-            for (int i = 0; i < _rowsCount + 1; i++)
+            for (int i = 0; i < _rowsCount; i++)
             {
                 currentPosition += GetPositionChange();
                 plinkoRoll.AddTurn(i, new BallFallTurn
@@ -58,13 +61,16 @@ namespace Game.Scripts
         private int GetPositionChange()
         {
             var random = new Random();
-            return random.Next(-1, 2);
+            var value = random.NextDouble();
+            // We have ideal binomial distribution
+            // I think any double position changes or another "errors" in one turn should be only animation effect
+            return value < 0.5 ? -1 : 1;
         }
         
         
         public static int GetPegsCount(int row)
         {
-            return FIRST_ROW_PEGS_COUNT + (row - 1);
+            return FIRST_ROW_PINS_COUNT + (row - 1);
         }
     }
 }

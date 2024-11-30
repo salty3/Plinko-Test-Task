@@ -5,18 +5,16 @@ namespace Game.Scripts.CurrencySystem
 {
     public class FakeCurrencyService : ICurrencyService
     {
-        private decimal _usdBalance;
-
-        public AsyncReactiveProperty<decimal> UsdBalance { get; }
-
+        public AsyncReactiveProperty<decimal> UsdBalance { get; } = new AsyncReactiveProperty<decimal>(2000.50m);
+        
         public void AddUsd(decimal amount)
         {
-            _usdBalance += amount;
+            UsdBalance.Value += amount;
         }
         
         public void SubtractUsd(decimal amount)
         {
-            _usdBalance -= amount;
+            UsdBalance.Value -= amount;
         }
     }
 }

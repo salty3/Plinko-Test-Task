@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 4147369969339869867}
   - component: {fileID: 3911919719737500284}
   m_Layer: 5
-  m_Name: PegRenderer
+  m_Name: PinRenderer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

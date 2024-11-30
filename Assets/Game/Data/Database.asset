@@ -12,4 +12,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b3cdceab47f0437d985d58d3c9792c87, type: 3}
   m_Name: Database
   m_EditorClassIdentifier: 
-  <LevelsCollection>k__BackingField: {fileID: 11400000, guid: ff5fffeb7afe9274ead0cce11567fdfa, type: 2}
+  <WinValuesConfig>k__BackingField: {fileID: 11400000, guid: 7b41f1a44a95a8c40b07ec8034bc3483, type: 2}

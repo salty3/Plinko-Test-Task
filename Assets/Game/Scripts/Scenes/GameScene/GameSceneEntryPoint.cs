@@ -3,6 +3,7 @@ using Cysharp.Threading.Tasks;
 using Game.Scripts.ApplicationCore;
 using Game.Scripts.ApplicationCore.ApplicationInitialization;
 using Game.Scripts.Scenes.GameScene.Behaviour;
+using Game.Scripts.Scenes.GameScene.Behaviour.States;
 using Tools.Runtime;
 using Tools.SceneManagement.Runtime;
 using UnityEngine;
@@ -15,23 +16,17 @@ namespace Game.Scripts.Scenes.GameScene
     {
         [SerializeField] private SceneContext _sceneContext;
         
-        [Inject]
-        private void Construct()
-        {
-         
-        }
-        
         //Can be used for more control over scene initialization process, heavy loadings etc.
         //Loading screen hides only after this method is completed.
-        public UniTask OnSceneOpen(IProgress<float> progress)
+        public async UniTask OnSceneOpen(IProgress<float> progress)
         {
             _sceneContext.ParentContractNames = new[] { nameof(ApplicationInitializer) };
             _sceneContext.Run();
-            //_sceneContext.Container.Resolve<GameplayLoopStateManager>().SwitchToState<PreparationPhaseState>();
+            await UniTask.NextFrame();
+            _sceneContext.Container.Resolve<GameplayLoopStateManager>().SwitchToState<PlayState>();
             
             
             progress.Report(1f);
-            return UniTask.CompletedTask;
         }
         
         private void ReturnToMenu()

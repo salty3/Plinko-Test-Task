@@ -1,6 +1,7 @@
 ﻿using Cysharp.Threading.Tasks;
 using Cysharp.Threading.Tasks.Linq;
 using Game.Scripts.BetSystem;
+using UnityEngine.Events;
 using Zenject;
 
 namespace Game.Scripts.Scenes.GameScene.UI.BottomPanel
@@ -9,6 +10,11 @@ namespace Game.Scripts.Scenes.GameScene.UI.BottomPanel
     {
         private readonly BottomPanelView _view;
         private readonly IBetService _betService;
+
+        // Should be observables
+        public readonly UnityEvent PlayHighBetButtonClicked = new();
+        public readonly UnityEvent PlayMediumBetButtonClicked = new();
+        public readonly UnityEvent PlayLowBetButtonClicked = new();
 
         [Inject]
         public BottomPanelPresenter(BottomPanelView view, IBetService betService)
@@ -36,13 +42,13 @@ namespace Game.Scripts.Scenes.GameScene.UI.BottomPanel
                 .Subscribe(_ => OnAutoBetButtonClicked());
             
             _view.PlayLowBetButton.OnClickAsAsyncEnumerable(_view.DestroyCancellationToken)
-                .Subscribe(_ => OnPlayLowBetButtonClicked());
+                .Subscribe(_ => PlayLowBetButtonClicked.Invoke());
             
             _view.PlayMediumBetButton.OnClickAsAsyncEnumerable(_view.DestroyCancellationToken)
-                .Subscribe(_ => OnPlayMediumBetButtonClicked());
+                .Subscribe(_ => PlayMediumBetButtonClicked.Invoke());
 
             _view.PlayHighBetButton.OnClickAsAsyncEnumerable(_view.DestroyCancellationToken)
-                .Subscribe(_ => OnPlayHighBetButtonClicked());
+                .Subscribe(_ => PlayHighBetButtonClicked.Invoke());
             
         }
         
@@ -62,21 +68,6 @@ namespace Game.Scripts.Scenes.GameScene.UI.BottomPanel
         }
         
         private void OnAutoBetButtonClicked()
-        {
-            
-        }
-        
-        private void OnPlayLowBetButtonClicked()
-        {
-            
-        }
-        
-        private void OnPlayMediumBetButtonClicked()
-        {
-            
-        }
-        
-        private void OnPlayHighBetButtonClicked()
         {
             
         }
