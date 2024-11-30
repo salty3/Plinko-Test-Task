@@ -7,6 +7,8 @@ namespace Game.Scripts
     {
         private readonly BallFallTurn[] _turns;
         
+        public IEnumerable<BallFallTurn> Turns => _turns;
+        
         public PlinkoRoll(int rowsCount)
         {
             _turns = new BallFallTurn[rowsCount + 1];
@@ -29,12 +31,17 @@ namespace Game.Scripts
         
         private const int FIRST_ROW_PEGS_COUNT = 3;
         
+        public PlinkoCore(int rowsCount)
+        {
+            _rowsCount = rowsCount;
+        }
+        
         public PlinkoRoll CalculateRoll()
         {
             var plinkoRoll = new PlinkoRoll(_rowsCount);
             
             int currentPosition = 0;
-            for (int i = 0; i < _rowsCount; i++)
+            for (int i = 0; i < _rowsCount + 1; i++)
             {
                 currentPosition += GetPositionChange();
                 plinkoRoll.AddTurn(i, new BallFallTurn
@@ -55,7 +62,7 @@ namespace Game.Scripts
         }
         
         
-        public int GetPegsCount(int row)
+        public static int GetPegsCount(int row)
         {
             return FIRST_ROW_PEGS_COUNT + (row - 1);
         }
