@@ -88,9 +88,9 @@ namespace Game.Scripts
         
         private void RenderBoxesForRisk(Transform container, Transform prefab, BetRisk risk, WinValuesConfig config, int rowsCount, List<BetMultiplierBoxView> boxes)
         {
+            boxes.Clear();
             foreach (Transform tr in container)
             {
-                boxes.Clear();
                 Destroy(tr.gameObject);
             }
 
