@@ -15,6 +15,8 @@ namespace Game.Scripts.ApplicationCore.ApplicationInitialization
             //Services initialization order depends on binding order
    
             Container.BindInstance(_database.WinValuesConfig).AsSingle();
+            Container.BindInstance(_database.PinRowsConfig).AsSingle();
+            Container.BindInstance(_database.BetsConfig).AsSingle();
 
             Container.BindInterfacesTo<FakeCurrencyService>().AsSingle();
             Container.BindInterfacesTo<BetService>().AsSingle();

@@ -13,3 +13,5 @@ MonoBehaviour:
   m_Name: Database
   m_EditorClassIdentifier: 
   <WinValuesConfig>k__BackingField: {fileID: 11400000, guid: 7b41f1a44a95a8c40b07ec8034bc3483, type: 2}
+  <PinRowsConfig>k__BackingField: {fileID: 11400000, guid: f839293a8cd6b30498e5e68d297e564b, type: 2}
+  <BetsConfig>k__BackingField: {fileID: 11400000, guid: d312f54612f2b8645ab8fea76e98a2d5, type: 2}

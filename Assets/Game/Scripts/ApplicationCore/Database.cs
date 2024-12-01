@@ -7,5 +7,7 @@ namespace Game.Scripts.ApplicationCore
     public class Database : ScriptableObject
     {
         [field: SerializeField] public WinValuesConfig WinValuesConfig { get; private set; }
+        [field: SerializeField] public PinRowsConfig PinRowsConfig { get; private set; }
+        [field: SerializeField] public BetsConfig BetsConfig { get; private set; }
     }
 }

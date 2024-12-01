@@ -1,6 +1,7 @@
 ﻿using Cysharp.Threading.Tasks;
 using Cysharp.Threading.Tasks.Linq;
 using Game.Scripts.BetSystem;
+using Game.Scripts.CurrencySystem;
 using UnityEngine.Events;
 using Zenject;
 
@@ -10,6 +11,7 @@ namespace Game.Scripts.Scenes.GameScene.UI.BottomPanel
     {
         private readonly BottomPanelView _view;
         private readonly IBetService _betService;
+        private ICurrencyService _currencyService;
 
         // Should be observables
         public readonly UnityEvent PlayHighBetButtonClicked = new();
@@ -17,29 +19,28 @@ namespace Game.Scripts.Scenes.GameScene.UI.BottomPanel
         public readonly UnityEvent PlayLowBetButtonClicked = new();
 
         [Inject]
-        public BottomPanelPresenter(BottomPanelView view, IBetService betService)
+        public BottomPanelPresenter(BottomPanelView view, IBetService betService, ICurrencyService currencyService)
         {
             _view = view;
             _betService = betService;
+            _currencyService = currencyService;
         }
 
         public void Initialize()
         {
             _betService.BetAmount
-                .Subscribe(amount => _view.SetBetAmountText($"{amount:C}"))
+                .Subscribe(OnBetAmountChanged)
+                .AddTo(_view.DestroyCancellationToken);
+            
+            _currencyService.UsdBalance
+                .Subscribe(OnBalanceChanged)
                 .AddTo(_view.DestroyCancellationToken);
             
             _view.AddBetButton.OnClickAsAsyncEnumerable(_view.DestroyCancellationToken)
                 .Subscribe(_ => OnAddBetButtonClicked());
-            
-            _view.ChooseBetButton.OnClickAsAsyncEnumerable(_view.DestroyCancellationToken)
-                .Subscribe(_ => OnChooseBetButtonClicked());
-            
+          
             _view.SubtractBetButton.OnClickAsAsyncEnumerable(_view.DestroyCancellationToken)
                 .Subscribe(_ => OnSubtractBetButtonClicked());
-            
-            _view.AutoBetButton.OnClickAsAsyncEnumerable(_view.DestroyCancellationToken)
-                .Subscribe(_ => OnAutoBetButtonClicked());
             
             _view.PlayLowBetButton.OnClickAsAsyncEnumerable(_view.DestroyCancellationToken)
                 .Subscribe(_ => PlayLowBetButtonClicked.Invoke());
@@ -51,25 +52,48 @@ namespace Game.Scripts.Scenes.GameScene.UI.BottomPanel
                 .Subscribe(_ => PlayHighBetButtonClicked.Invoke());
             
         }
+
+        private void OnBalanceChanged(decimal balance)
+        {
+            UpdateInteractions(balance, _betService.BetAmount.Value);
+        }
+        
+        private void OnBetAmountChanged(decimal amount)
+        {
+            _view.SetBetAmountText($"{amount:C}");
+            UpdateInteractions(_currencyService.UsdBalance.Value, amount);
+        }
+        
+        private void UpdateInteractions(decimal currentBalance, decimal currentBet)
+        {
+            if (currentBalance < currentBet)
+            {
+                BlockInteractions();
+            }
+            else
+            {
+                UnblockInteractions();
+            }
+        }
         
         private void OnAddBetButtonClicked()
         {
-            
-        }
-        
-        private void OnChooseBetButtonClicked()
-        {
-            
+            _betService.IncrementBet();
         }
         
         private void OnSubtractBetButtonClicked()
         {
-            
+            _betService.DecrementBet();
         }
         
-        private void OnAutoBetButtonClicked()
+        private void BlockInteractions()
         {
-            
+            _view.BlockPlayButtons();
+        }
+        
+        private void UnblockInteractions()
+        {
+            _view.UnblockPlayButtons();
         }
     }
 }

@@ -6,7 +6,7 @@ using Zenject;
 
 namespace Game.Scripts.ApplicationCore.ApplicationEntry
 {
-    //Game entry point
+    //App entry point
     public class Startup : MonoBehaviour
     {
         [SerializeField] private SceneContext _projectContext;

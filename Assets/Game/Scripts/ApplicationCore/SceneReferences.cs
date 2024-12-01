@@ -9,7 +9,6 @@ namespace Game.Scripts.ApplicationCore
         [field: SerializeField] public SceneReference Startup { get; private set; }
         [field: SerializeField] public SceneReference Bootstrap { get; private set; }
         [field: SerializeField] public SceneReference GameScene { get; private set; }
-        [field: SerializeField] public SceneReference MainMenu { get; private set; }
         [field: SerializeField] public SceneReference Loading { get; private set; }
     }
 }

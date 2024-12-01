@@ -6,6 +6,6 @@ namespace Game.Scripts.CurrencySystem
     {
         AsyncReactiveProperty<decimal> UsdBalance { get; }
         void AddUsd(decimal amount);
-        void SubtractUsd(decimal amount);
+        bool TrySubtractUsd(decimal amount);
     }
 }

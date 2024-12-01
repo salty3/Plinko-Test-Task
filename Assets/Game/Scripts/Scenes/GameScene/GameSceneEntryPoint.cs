@@ -1,13 +1,10 @@
 ﻿using System;
 using Cysharp.Threading.Tasks;
-using Game.Scripts.ApplicationCore;
 using Game.Scripts.ApplicationCore.ApplicationInitialization;
-using Game.Scripts.Scenes.GameScene.Behaviour;
-using Game.Scripts.Scenes.GameScene.Behaviour.States;
+using Game.Scripts.Core;
 using Tools.Runtime;
 using Tools.SceneManagement.Runtime;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using Zenject;
 
 namespace Game.Scripts.Scenes.GameScene
@@ -23,23 +20,8 @@ namespace Game.Scripts.Scenes.GameScene
             _sceneContext.ParentContractNames = new[] { nameof(ApplicationInitializer) };
             _sceneContext.Run();
             await UniTask.NextFrame();
-            _sceneContext.Container.Resolve<GameplayLoopStateManager>().SwitchToState<PlayState>();
-            
-            
+            _sceneContext.Container.Resolve<PlinkoCore>().Initialize();
             progress.Report(1f);
-        }
-        
-        private void ReturnToMenu()
-        {
-            var sceneController = _sceneContext.Container.Resolve<SceneController>();
-            var sceneReferences = _sceneContext.Container.Resolve<SceneReferences>();
-
-            var builder = sceneReferences.MainMenu.LoadScene()
-                .WithLoadingScreen(sceneReferences.Loading)
-                .WithMode(LoadSceneMode.Additive)
-                .WithClosing(sceneReferences.GameScene);
-            
-            sceneController.LoadAsync(builder).Forget();
         }
     }
 }

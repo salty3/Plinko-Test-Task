@@ -1,4 +1,5 @@
-﻿using Game.Scripts.Scenes.GameScene.Behaviour;
+﻿using Game.Scripts.Core;
+using Game.Scripts.Scenes.GameScene.UI.AddBalancePopUp;
 using Game.Scripts.Scenes.GameScene.UI.BottomPanel;
 using Game.Scripts.Scenes.GameScene.UI.TopPanel;
 using UnityEngine;
@@ -10,6 +11,7 @@ namespace Game.Scripts.Scenes.GameScene
     {
         [SerializeField] private TopPanelView _topPanelView;
         [SerializeField] private BottomPanelView _bottomPanelView;
+        [SerializeField] private AddBalancePopUpView _addBalancePopUpView;
         [SerializeField] private PinsRenderer _pinsRenderer;
 
         
@@ -21,16 +23,18 @@ namespace Game.Scripts.Scenes.GameScene
         
         public override void InstallBindings()
         {
-            Container.BindInstance(_topPanelView).AsSingle();
-            Container.BindInstance(_bottomPanelView).AsSingle();
+            Container.BindInstance(_topPanelView);
+            Container.BindInstance(_bottomPanelView);
+            Container.BindInstance(_addBalancePopUpView);
             Container.BindInstance(_pinsRenderer);
 
             
             Container.BindInterfacesAndSelfTo<TopPanelPresenter>().AsSingle();
             Container.BindInterfacesAndSelfTo<BottomPanelPresenter>().AsSingle();
+            Container.BindInterfacesAndSelfTo<AddBalancePopUpPresenter>().AsSingle();
             
             
-            Container.BindInterfacesAndSelfTo<GameplayLoopStateManager>().AsSingle();
+            Container.BindInterfacesAndSelfTo<PlinkoCore>().AsSingle();
         }
     }
 }

@@ -9,19 +9,15 @@ namespace Game.Scripts.BetSystem
         [SerializeField] private float[] _mediumBetMultipliers;
         [SerializeField] private float[] _highBetMultipliers;
         
-        public float GetLowBetMultiplier(int index)
+        public float GetMultiplier(BetRisk risk, int index)
         {
-            return _lowBetMultipliers[Mathf.Abs(index)];
-        }
-        
-        public float GetMediumBetMultiplier(int index)
-        {
-            return _mediumBetMultipliers[Mathf.Abs(index)];
-        }
-        
-        public float GetHighBetMultiplier(int index)
-        {
-            return _highBetMultipliers[Mathf.Abs(index)];
+            return risk switch
+            {
+                BetRisk.Low => _lowBetMultipliers[Mathf.Abs(index)],
+                BetRisk.Medium => _mediumBetMultipliers[Mathf.Abs(index)],
+                BetRisk.High => _highBetMultipliers[Mathf.Abs(index)],
+                _ => throw new System.ArgumentOutOfRangeException(nameof(risk), risk, null)
+            };
         }
     }
 }

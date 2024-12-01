@@ -1,35 +1,28 @@
 ﻿using System;
+using System.Linq;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
 using Zenject;
 
 namespace Game.Scripts.BetSystem
 {
-    public interface IBetService
-    {
-        AsyncReactiveProperty<decimal> BetAmount { get; }
-        
-        decimal GetMultiplier(BetRisk risk, int index);
-    }
-
-    public enum BetRisk
-    {
-        Low,
-        Medium,
-        High
-    }
-    
     public class BetService : IBetService
     {
-        public AsyncReactiveProperty<decimal> BetAmount { get; } = new AsyncReactiveProperty<decimal>(100m);
+        public AsyncReactiveProperty<decimal> BetAmount { get; }
         
-        private WinValuesConfig _winValuesConfig;
+        private readonly WinValuesConfig _winValuesConfig;
+        private readonly decimal[] _betPresets;
+
+        private int _currentPresetIndex;
 
         
         [Inject]
-        public BetService(WinValuesConfig winValuesConfig)
+        public BetService(WinValuesConfig winValuesConfig, BetsConfig betsConfig)
         {
             _winValuesConfig = winValuesConfig;
+            _betPresets = betsConfig.BetPresets.Select(Convert.ToDecimal).ToArray();
+            _currentPresetIndex = 0;
+            BetAmount = new AsyncReactiveProperty<decimal>(_betPresets[_currentPresetIndex]);
         }
         
         public decimal GetMultiplier(BetRisk risk, int index)
@@ -38,13 +31,25 @@ namespace Game.Scripts.BetSystem
             {
                 index /= 2;
             }
-            return risk switch
+            return Convert.ToDecimal(_winValuesConfig.GetMultiplier(risk, index));
+        }
+
+        public void IncrementBet()
+        {
+            if (_currentPresetIndex < _betPresets.Length - 1)
             {
-                BetRisk.Low => Convert.ToDecimal(_winValuesConfig.GetLowBetMultiplier(index)),
-                BetRisk.Medium => Convert.ToDecimal(_winValuesConfig.GetMediumBetMultiplier(index)),
-                BetRisk.High => Convert.ToDecimal(_winValuesConfig.GetHighBetMultiplier(index)),
-                _ => throw new ArgumentOutOfRangeException(nameof(risk), risk, null)
-            };
+                _currentPresetIndex++;
+                BetAmount.Value = _betPresets[_currentPresetIndex];
+            }
+        }
+
+        public void DecrementBet()
+        {
+            if (_currentPresetIndex > 0)
+            {
+                _currentPresetIndex--;
+                BetAmount.Value = _betPresets[_currentPresetIndex];
+            }
         }
     }
 }
