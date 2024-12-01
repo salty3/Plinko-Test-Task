@@ -1,7 +1,7 @@
-# Card-Flip-Test-Task
+# Plinko-Test-Task
 
-**Used Packages:** Zenject, DOTween, UniTask, SmoothLayout  
-**Used Patterns:** Entry Point, State Machine, MVP, DI
+**Used Packages:** Zenject, DOTween, UniTask
+**Used Patterns:** Entry Point, MVP, DI, Object Pool
 
 ## How to Run
 1. Open the `Startup` scene.
@@ -13,32 +13,28 @@
 Used for easy control of game loading and initialization. Each scene has its own entry point, which initializes the scene context, necessary services, and loads heavy assets. (See `ISceneEntryPoint` and the `SceneManagement` folder)
 
 **Examples:**
-- **Startup.cs**: A lightweight entry point that initializes the project context and loads the initial scene.
-- **ApplicationInitializer.cs**: Initializes all global services and can be used for establishing connections with the backend, loading initial data, etc.
+- `Startup.cs`: A lightweight entry point that initializes the project context and loads the initial scene.
+- `ApplicationInitializer.cs`: Initializes all global services and can be used for establishing connections with the backend, loading initial data, etc.
 
-### State Machine
-Used for easy control of game states. Each state is a separate class, which can be easily extended and modified.
+### Object Pool
+Made the simplest pool implementation for plinko balls.
+- `Pool.cs`
 
-- **GameplayLoopStateManager.cs**: Responsible for game loop states.
-- **MenuStateManager.cs**: Responsible for menu states.
+### Betting/Balance
+Simplest realizations. Ideally all balance and plinko calculations should be done on the server side.
+- `ICurrencyService.cs`
+- `IBetService.cs`
 
-### MVP (Model-View-Presenter)
-Used for easy separation of concerns and testability. Each view has its own presenter, responsible for view logic and communication with other parts of the system. Ideally, any reactive library should be used.
+### ~~State Machine~~
+I really don't know where to use it here. I had 2 variants:
+1. Use it for pins amount (12/14/16) but is it really necessary?
+2. Use it for game states but there is only one state.
 
-### Dependency Injection (DI)
-Not Singleton :)
+## Main Files
+- `PlinkoLogic.cs`: Roll calculations.
+- `PlinkoCore.cs`: Main game loop logic.
+- `PinsRenderer.cs`: Visuals logic. Ideally should be separated into smaller classes :)
 
-## Packages
-
-### DOTween
-Chosen for its simplicity over Unity's animation system for this task.
-
-### UniTask
-Preferred for its clarity over coroutines.
-
-### [SmoothLayout](https://gist.github.com/codorizzi/79aab1ae7d7940fe3e3603af61cd8617)
-Used for cards shuffle animation.
-
----
-
-The completion of this test assignment took ~24 hours.
+## UI
+I didn't find any similar assets to demo, so I used Rounded rects from open upm https://openupm.com/packages/com.gilzoide.rounded-corners/
+Looks kinda ugly and add to many vertices but that's most similar to the original design.
